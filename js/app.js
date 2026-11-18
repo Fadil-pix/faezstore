@@ -97,7 +97,7 @@ function switchSection(secId, btnEl) {
 // Load Storefront Data (API first, fallback to Local Seed DB)
 async function loadStoreData() {
   try {
-    const res = await fetch("/api/store/catalog", {
+    const res = await fetch(`${FAEZ_CONFIG.apiBase}/api/store/catalog`, {
       headers: { Accept: "application/json" },
     });
     if (!res.ok) throw new Error("Fallback local");
@@ -463,11 +463,14 @@ async function applyCheckoutVoucher(silent = false) {
 
   if (STORE.isLiveBackend) {
     try {
-      const res = await fetch("/api/store/voucher/check", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kode: raw, subtotal }),
-      });
+      const res = await fetch(
+        `${FAEZ_CONFIG.apiBase}/api/store/voucher/check`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ kode: raw, subtotal }),
+        },
+      );
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Voucher tidak valid");
       STORE.checkout.voucherCode = data.kode;
@@ -526,16 +529,19 @@ async function createQrisOrder() {
 
   try {
     if (STORE.isLiveBackend) {
-      const res = await fetch("/api/store/checkout-qris", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          kode: p.kode,
-          qty,
-          voucher_code: voucherCode || null,
-          telegram_id: buyerContact,
-        }),
-      });
+      const res = await fetch(
+        `${FAEZ_CONFIG.apiBase}/api/store/checkout-qris`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            kode: p.kode,
+            qty,
+            voucher_code: voucherCode || null,
+            telegram_id: buyerContact,
+          }),
+        },
+      );
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Gagal membuat tagihan QRIS");
 

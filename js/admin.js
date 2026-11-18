@@ -8,7 +8,7 @@ let STATE = {
   vouchers: [],
   transactions: [],
   users: [],
-  currentStocks: []
+  currentStocks: [],
 };
 
 const rp = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
@@ -50,13 +50,13 @@ function logout() {
 }
 
 async function api(url, opts = {}) {
-  const res = await fetch(url, {
+  const res = await fetch(`${FAEZ_CONFIG.apiBase}${url}`, {
     ...opts,
     headers: {
       "Content-Type": "application/json",
       "x-admin-token": getToken(),
-      ...(opts.headers || {})
-    }
+      ...(opts.headers || {}),
+    },
   });
   if (res.status === 401) {
     document.getElementById("authModal").style.display = "flex";
@@ -68,8 +68,12 @@ async function api(url, opts = {}) {
 }
 
 function switchTab(id, btn) {
-  document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+  document
+    .querySelectorAll(".section")
+    .forEach((s) => s.classList.remove("active"));
+  document
+    .querySelectorAll(".tab-btn")
+    .forEach((b) => b.classList.remove("active"));
   document.getElementById(id).classList.add("active");
   btn.classList.add("active");
 }
@@ -97,7 +101,9 @@ async function loadAll(forceLocal = false) {
   const token = getToken();
   if (token !== "f@dil123" && token !== "admin123" && !forceLocal) {
     document.getElementById("authModal").style.display = "flex";
-    return toast("Mode Lokal: Gunakan password .env (f@dil123) atau klik Mode Demo.");
+    return toast(
+      "Mode Lokal: Gunakan password .env (f@dil123) atau klik Mode Demo.",
+    );
   }
 
   STATE.isLiveBackend = false;
@@ -106,15 +112,21 @@ async function loadAll(forceLocal = false) {
 
   const local = getLocalStoreData();
   const products = local.products.map((p) => {
-    const ready = local.stocks.filter((s) => s.kode_produk === p.kode && !s.is_sold).length;
+    const ready = local.stocks.filter(
+      (s) => s.kode_produk === p.kode && !s.is_sold,
+    ).length;
     return { ...p, stok: ready };
   });
 
   const todayStr = new Date().toISOString().slice(0, 10);
-  const trxTodayList = local.transactions.filter((t) => (t.created_at || "").slice(0, 10) === todayStr);
+  const trxTodayList = local.transactions.filter(
+    (t) => (t.created_at || "").slice(0, 10) === todayStr,
+  );
   const ratedList = local.transactions.filter((t) => t.rating);
   const avgRating = ratedList.length
-    ? (ratedList.reduce((a, b) => a + Number(b.rating), 0) / ratedList.length).toFixed(1)
+    ? (
+        ratedList.reduce((a, b) => a + Number(b.rating), 0) / ratedList.length
+      ).toFixed(1)
     : "5.0";
 
   const stats = {
@@ -127,7 +139,7 @@ async function loadAll(forceLocal = false) {
     avgRating,
     totalRatings: ratedList.length,
     totalUsers: local.users.length,
-    totalSaldoUser: local.users.reduce((a, b) => a + Number(b.balance || 0), 0)
+    totalSaldoUser: local.users.reduce((a, b) => a + Number(b.balance || 0), 0),
   };
 
   STATE.products = products;
@@ -142,18 +154,25 @@ async function loadAll(forceLocal = false) {
 function renderOverviewMetrics(storeName, stats) {
   document.getElementById("storeTitle").textContent = storeName;
   document.getElementById("statOmzetToday").textContent = rp(stats.omzetToday);
-  document.getElementById("statTrxToday").textContent = `${stats.trxToday} transaksi`;
+  document.getElementById("statTrxToday").textContent =
+    `${stats.trxToday} transaksi`;
   document.getElementById("statOmzetAll").textContent = rp(stats.omzetAll);
-  document.getElementById("statTrxAll").textContent = `${stats.trxAll} total order`;
+  document.getElementById("statTrxAll").textContent =
+    `${stats.trxAll} total order`;
   document.getElementById("statStok").textContent = stats.stokReady;
-  document.getElementById("statProduk").textContent = `${stats.totalProduk} sub-produk`;
-  document.getElementById("statRating").textContent = `${stats.avgRating} / 5 (${stats.totalRatings})`;
-  document.getElementById("statUsers").textContent = `${stats.totalUsers} user · ${rp(stats.totalSaldoUser)}`;
+  document.getElementById("statProduk").textContent =
+    `${stats.totalProduk} sub-produk`;
+  document.getElementById("statRating").textContent =
+    `${stats.avgRating} / 5 (${stats.totalRatings})`;
+  document.getElementById("statUsers").textContent =
+    `${stats.totalUsers} user · ${rp(stats.totalSaldoUser)}`;
 }
 
 function finalizeRender() {
   const kats = [...new Set(STATE.products.map((p) => p.kategori || "Lainnya"))];
-  document.getElementById("kategoriList").innerHTML = kats.map((k) => `<option value="${esc(k)}">`).join("");
+  document.getElementById("kategoriList").innerHTML = kats
+    .map((k) => `<option value="${esc(k)}">`)
+    .join("");
   renderProducts();
   populateStockDropdown();
   renderVouchers();
@@ -168,7 +187,7 @@ function renderProducts() {
     (p) =>
       p.kode.toLowerCase().includes(q) ||
       p.nama.toLowerCase().includes(q) ||
-      (p.kategori || "").toLowerCase().includes(q)
+      (p.kategori || "").toLowerCase().includes(q),
   );
   document.getElementById("tblProduk").innerHTML =
     filtered
@@ -189,18 +208,23 @@ function renderProducts() {
           </div>
         </td>
       </tr>
-    `
+    `,
       )
-      .join("") || `<tr><td colspan="5" style="text-align:center;color:var(--dim);">Tidak ada produk</td></tr>`;
+      .join("") ||
+    `<tr><td colspan="5" style="text-align:center;color:var(--dim);">Tidak ada produk</td></tr>`;
 }
 
 async function addProduct() {
   const payload = {
     kategori: document.getElementById("pKategori").value.trim() || "Lainnya",
-    kode: document.getElementById("pKode").value.trim().toUpperCase().replace(/\s+/g, ""),
+    kode: document
+      .getElementById("pKode")
+      .value.trim()
+      .toUpperCase()
+      .replace(/\s+/g, ""),
     nama: document.getElementById("pNama").value.trim(),
     harga: Number(document.getElementById("pHarga").value || 0),
-    deskripsi: document.getElementById("pDesk").value.trim()
+    deskripsi: document.getElementById("pDesk").value.trim(),
   };
   if (!payload.kode || !payload.nama || !payload.harga) {
     return toast("Kode, nama, dan harga wajib diisi.");
@@ -208,7 +232,10 @@ async function addProduct() {
 
   try {
     if (STATE.isLiveBackend) {
-      await api("/api/admin/products", { method: "POST", body: JSON.stringify(payload) });
+      await api("/api/admin/products", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
     } else {
       const local = getLocalStoreData();
       if (local.products.some((p) => p.kode === payload.kode)) {
@@ -217,7 +244,9 @@ async function addProduct() {
       local.products.push({ ...payload, stok: 0, total: 0 });
       saveLocalStoreData(local);
     }
-    ["pKode", "pNama", "pHarga", "pDesk"].forEach((id) => (document.getElementById(id).value = ""));
+    ["pKode", "pNama", "pHarga", "pDesk"].forEach(
+      (id) => (document.getElementById(id).value = ""),
+    );
     toast("Sub-produk ditambahkan");
     loadAll(!STATE.isLiveBackend);
   } catch (e) {
@@ -244,16 +273,20 @@ async function saveEditProduct() {
     kategori: document.getElementById("editKategori").value.trim() || "Lainnya",
     nama: document.getElementById("editNama").value.trim(),
     harga: Number(document.getElementById("editHarga").value || 0),
-    deskripsi: document.getElementById("editDesk").value.trim()
+    deskripsi: document.getElementById("editDesk").value.trim(),
   };
 
   try {
     if (STATE.isLiveBackend) {
-      await api(`/api/admin/products/${kode}`, { method: "PUT", body: JSON.stringify(payload) });
+      await api(`/api/admin/products/${kode}`, {
+        method: "PUT",
+        body: JSON.stringify(payload),
+      });
     } else {
       const local = getLocalStoreData();
       const idx = local.products.findIndex((p) => p.kode === kode);
-      if (idx !== -1) local.products[idx] = { ...local.products[idx], ...payload };
+      if (idx !== -1)
+        local.products[idx] = { ...local.products[idx], ...payload };
       saveLocalStoreData(local);
     }
     closeEditModal();
@@ -272,7 +305,9 @@ async function deleteProduct(kode) {
     } else {
       const local = getLocalStoreData();
       local.products = local.products.filter((p) => p.kode !== kode);
-      local.stocks = local.stocks.filter((s) => !(s.kode_produk === kode && !s.is_sold));
+      local.stocks = local.stocks.filter(
+        (s) => !(s.kode_produk === kode && !s.is_sold),
+      );
       saveLocalStoreData(local);
     }
     toast("Produk dihapus");
@@ -286,7 +321,10 @@ function populateStockDropdown() {
   const sel = document.getElementById("stokSelectProduk");
   const prev = sel.value;
   sel.innerHTML = STATE.products
-    .map((p) => `<option value="${esc(p.kode)}">[${esc(p.kategori)}] ${esc(p.nama)} (${p.stok} ready)</option>`)
+    .map(
+      (p) =>
+        `<option value="${esc(p.kode)}">[${esc(p.kategori)}] ${esc(p.nama)} (${p.stok} ready)</option>`,
+    )
     .join("");
   if (prev && STATE.products.some((p) => p.kode === prev)) sel.value = prev;
   loadStockDetail();
@@ -295,14 +333,17 @@ function populateStockDropdown() {
 async function loadStockDetail() {
   const kode = document.getElementById("stokSelectProduk").value;
   if (!kode) return;
-  document.getElementById("stokDetailTitle").textContent = `Stok Ready · ${kode}`;
+  document.getElementById("stokDetailTitle").textContent =
+    `Stok Ready · ${kode}`;
   try {
     if (STATE.isLiveBackend) {
       const data = await api(`/api/admin/stocks/${kode}`);
       STATE.currentStocks = data.stocks;
     } else {
       const local = getLocalStoreData();
-      STATE.currentStocks = local.stocks.filter((s) => s.kode_produk === kode && !s.is_sold);
+      STATE.currentStocks = local.stocks.filter(
+        (s) => s.kode_produk === kode && !s.is_sold,
+      );
     }
     renderStockDetail();
   } catch (e) {
@@ -312,7 +353,9 @@ async function loadStockDetail() {
 
 function renderStockDetail() {
   const q = document.getElementById("searchStok").value.toLowerCase();
-  const filtered = STATE.currentStocks.filter((s) => s.data_akun.toLowerCase().includes(q));
+  const filtered = STATE.currentStocks.filter((s) =>
+    s.data_akun.toLowerCase().includes(q),
+  );
   document.getElementById("tblStokDetail").innerHTML =
     filtered
       .map(
@@ -322,27 +365,43 @@ function renderStockDetail() {
         <td class="mono" style="font-size:12px;">${esc(s.data_akun)}</td>
         <td style="text-align:right;"><button class="btn btn-danger btn-sm" onclick="deleteStockItem(${s.id})">Hapus</button></td>
       </tr>
-    `
+    `,
       )
-      .join("") || `<tr><td colspan="3" style="text-align:center;color:var(--dim);">Stok kosong</td></tr>`;
+      .join("") ||
+    `<tr><td colspan="3" style="text-align:center;color:var(--dim);">Stok kosong</td></tr>`;
 }
 
 async function addBulkStock() {
   const kode = document.getElementById("stokSelectProduk").value;
   const accounts = document.getElementById("stokAccounts").value;
-  const lines = accounts.split(/\r?\n/).map((s) => s.trim()).filter(Boolean);
-  if (!kode || lines.length === 0) return toast("Isi daftar akun terlebih dahulu.");
+  const lines = accounts
+    .split(/\r?\n/)
+    .map((s) => s.trim())
+    .filter(Boolean);
+  if (!kode || lines.length === 0)
+    return toast("Isi daftar akun terlebih dahulu.");
 
   try {
     if (STATE.isLiveBackend) {
-      const res = await api("/api/admin/stocks", { method: "POST", body: JSON.stringify({ kode, accounts }) });
+      const res = await api("/api/admin/stocks", {
+        method: "POST",
+        body: JSON.stringify({ kode, accounts }),
+      });
       toast(`${res.added} stok ditambahkan`);
     } else {
       const local = getLocalStoreData();
-      let maxId = local.stocks.reduce((m, s) => Math.max(m, Number(s.id || 0)), 0);
+      let maxId = local.stocks.reduce(
+        (m, s) => Math.max(m, Number(s.id || 0)),
+        0,
+      );
       lines.forEach((acc) => {
         maxId += 1;
-        local.stocks.push({ id: maxId, kode_produk: kode, data_akun: acc, is_sold: false });
+        local.stocks.push({
+          id: maxId,
+          kode_produk: kode,
+          data_akun: acc,
+          is_sold: false,
+        });
       });
       saveLocalStoreData(local);
       toast(`${lines.length} stok ditambahkan`);
@@ -378,7 +437,9 @@ async function clearSelectedStock() {
       await api(`/api/admin/stocks/clear/${kode}`, { method: "DELETE" });
     } else {
       const local = getLocalStoreData();
-      local.stocks = local.stocks.filter((s) => !(s.kode_produk === kode && !s.is_sold));
+      local.stocks = local.stocks.filter(
+        (s) => !(s.kode_produk === kode && !s.is_sold),
+      );
       saveLocalStoreData(local);
     }
     toast("Stok dikosongkan");
@@ -390,7 +451,9 @@ async function clearSelectedStock() {
 
 function renderVouchers() {
   const q = document.getElementById("searchVoucher").value.toLowerCase();
-  const filtered = STATE.vouchers.filter((v) => v.kode.toLowerCase().includes(q));
+  const filtered = STATE.vouchers.filter((v) =>
+    v.kode.toLowerCase().includes(q),
+  );
   document.getElementById("tblVoucher").innerHTML =
     filtered
       .map(
@@ -402,31 +465,42 @@ function renderVouchers() {
         <td class="mono">${rp(v.min_belanja)}</td>
         <td style="text-align:right;"><button class="btn btn-danger btn-sm" onclick="deleteVoucher('${esc(v.kode)}')">Hapus</button></td>
       </tr>
-    `
+    `,
       )
-      .join("") || `<tr><td colspan="5" style="text-align:center;color:var(--dim);">Belum ada voucher</td></tr>`;
+      .join("") ||
+    `<tr><td colspan="5" style="text-align:center;color:var(--dim);">Belum ada voucher</td></tr>`;
 }
 
 async function addVoucher() {
   const payload = {
-    kode: document.getElementById("vKode").value.trim().toUpperCase().replace(/\s+/g, ""),
+    kode: document
+      .getElementById("vKode")
+      .value.trim()
+      .toUpperCase()
+      .replace(/\s+/g, ""),
     tipe: document.getElementById("vTipe").value,
     nilai: Number(document.getElementById("vNilai").value || 0),
     kuota: Number(document.getElementById("vKuota").value || 0),
-    min_belanja: Number(document.getElementById("vMin").value || 0)
+    min_belanja: Number(document.getElementById("vMin").value || 0),
   };
-  if (!payload.kode || !payload.nilai || !payload.kuota) return toast("Data voucher belum lengkap");
+  if (!payload.kode || !payload.nilai || !payload.kuota)
+    return toast("Data voucher belum lengkap");
 
   try {
     if (STATE.isLiveBackend) {
-      await api("/api/admin/vouchers", { method: "POST", body: JSON.stringify(payload) });
+      await api("/api/admin/vouchers", {
+        method: "POST",
+        body: JSON.stringify(payload),
+      });
     } else {
       const local = getLocalStoreData();
       local.vouchers = local.vouchers.filter((v) => v.kode !== payload.kode);
       local.vouchers.unshift({ ...payload, terpakai: 0 });
       saveLocalStoreData(local);
     }
-    ["vKode", "vNilai", "vKuota"].forEach((id) => (document.getElementById(id).value = ""));
+    ["vKode", "vNilai", "vKuota"].forEach(
+      (id) => (document.getElementById(id).value = ""),
+    );
     toast("Voucher disimpan");
     loadAll(!STATE.isLiveBackend);
   } catch (e) {
@@ -458,7 +532,7 @@ function renderTransactions() {
       t.trx_id.toLowerCase().includes(q) ||
       String(t.telegram_id).includes(q) ||
       (t.username || "").toLowerCase().includes(q) ||
-      (t.nama_produk || t.kode_produk).toLowerCase().includes(q)
+      (t.nama_produk || t.kode_produk).toLowerCase().includes(q),
   );
   document.getElementById("tblTrx").innerHTML =
     filtered
@@ -480,13 +554,26 @@ function renderTransactions() {
         </td>
         <td style="font-size:12px;color:var(--dim);">${new Date(t.created_at).toLocaleString("id-ID")}</td>
       </tr>
-    `
+    `,
       )
-      .join("") || `<tr><td colspan="7" style="text-align:center;color:var(--dim);">Tidak ada transaksi</td></tr>`;
+      .join("") ||
+    `<tr><td colspan="7" style="text-align:center;color:var(--dim);">Tidak ada transaksi</td></tr>`;
 }
 
 function exportCsv() {
-  const headers = ["TRX_ID", "TELEGRAM_ID", "USERNAME", "KODE_PRODUK", "NAMA_PRODUK", "QTY", "VOUCHER", "TOTAL_BAYAR", "RATING", "GARANSI", "WAKTU"];
+  const headers = [
+    "TRX_ID",
+    "TELEGRAM_ID",
+    "USERNAME",
+    "KODE_PRODUK",
+    "NAMA_PRODUK",
+    "QTY",
+    "VOUCHER",
+    "TOTAL_BAYAR",
+    "RATING",
+    "GARANSI",
+    "WAKTU",
+  ];
   const lines = STATE.transactions.map((t) =>
     [
       `"${t.trx_id}"`,
@@ -499,10 +586,12 @@ function exportCsv() {
       t.harga,
       t.rating || 0,
       t.warranty_active ? "AKTIF" : "BELUM",
-      `"${new Date(t.created_at).toISOString()}"`
-    ].join(",")
+      `"${new Date(t.created_at).toISOString()}"`,
+    ].join(","),
   );
-  const blob = new Blob(["\uFEFF" + [headers.join(","), ...lines].join("\n")], { type: "text/csv;charset=utf-8;" });
+  const blob = new Blob(["\uFEFF" + [headers.join(","), ...lines].join("\n")], {
+    type: "text/csv;charset=utf-8;",
+  });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `Laporan_FaezStore_${new Date().toISOString().slice(0, 10)}.csv`;
@@ -512,7 +601,9 @@ function exportCsv() {
 function renderUsers() {
   const q = document.getElementById("searchUser").value.toLowerCase();
   const filtered = STATE.users.filter(
-    (u) => String(u.telegram_id).includes(q) || (u.username || "").toLowerCase().includes(q)
+    (u) =>
+      String(u.telegram_id).includes(q) ||
+      (u.username || "").toLowerCase().includes(q),
   );
   document.getElementById("tblUsers").innerHTML =
     filtered
@@ -530,13 +621,16 @@ function renderUsers() {
           </div>
         </td>
       </tr>
-    `
+    `,
       )
-      .join("") || `<tr><td colspan="5" style="text-align:center;color:var(--dim);">Tidak ada pelanggan</td></tr>`;
+      .join("") ||
+    `<tr><td colspan="5" style="text-align:center;color:var(--dim);">Tidak ada pelanggan</td></tr>`;
 }
 
 async function adjustBalance(tgId, isAdd) {
-  const raw = prompt(isAdd ? `Tambah saldo untuk ${tgId}:` : `Kurangi saldo untuk ${tgId}:`);
+  const raw = prompt(
+    isAdd ? `Tambah saldo untuk ${tgId}:` : `Kurangi saldo untuk ${tgId}:`,
+  );
   if (!raw) return;
   const val = Number(raw.replace(/[^\d]/g, ""));
   if (!val) return toast("Nominal tidak valid");
@@ -544,13 +638,18 @@ async function adjustBalance(tgId, isAdd) {
     if (STATE.isLiveBackend) {
       await api("/api/admin/users/balance", {
         method: "POST",
-        body: JSON.stringify({ telegram_id: tgId, delta: isAdd ? val : -val })
+        body: JSON.stringify({ telegram_id: tgId, delta: isAdd ? val : -val }),
       });
     } else {
       const local = getLocalStoreData();
-      const idx = local.users.findIndex((u) => Number(u.telegram_id) === Number(tgId));
+      const idx = local.users.findIndex(
+        (u) => Number(u.telegram_id) === Number(tgId),
+      );
       if (idx !== -1) {
-        local.users[idx].balance = Math.max(0, Number(local.users[idx].balance || 0) + (isAdd ? val : -val));
+        local.users[idx].balance = Math.max(
+          0,
+          Number(local.users[idx].balance || 0) + (isAdd ? val : -val),
+        );
         saveLocalStoreData(local);
       }
     }
@@ -566,7 +665,10 @@ async function sendBroadcast() {
   if (!message || !confirm("Kirim broadcast ke semua user?")) return;
   try {
     if (STATE.isLiveBackend) {
-      await api("/api/admin/broadcast", { method: "POST", body: JSON.stringify({ message }) });
+      await api("/api/admin/broadcast", {
+        method: "POST",
+        body: JSON.stringify({ message }),
+      });
       toast("Broadcast dikirim di background");
     } else {
       toast("Simulasi Broadcast: Pesan siap dikirim ke seluruh user Telegram.");
