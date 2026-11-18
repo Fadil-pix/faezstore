@@ -160,7 +160,7 @@ function setConnectionBadge(isLive) {
     badge.innerHTML = '<span class="status-dot"></span> Server Live';
   } else {
     badge.className = "pill pill-neutral";
-    badge.innerHTML = '<span class="status-dot"></span> Katalog Aktif';
+    badge.innerHTML = '<span class="status-dot"></span> Mode Katalog';
   }
 }
 
@@ -638,7 +638,7 @@ async function checkPaymentStatus(silent = false) {
 
   if (STORE.isLiveBackend) {
     try {
-      const res = await fetch(`/api/store/deposit/${depId}`);
+      const res = await fetch(`${FAEZ_CONFIG.apiBase}/api/store/deposit/${depId}`);
       const data = await res.json();
       if (data.ok && data.status === "PAID" && data.transaction) {
         stopCheckoutTimers();
@@ -869,7 +869,7 @@ async function lookupInvoiceById(forcedId) {
   if (STORE.isLiveBackend) {
     try {
       const res = await fetch(
-        `/api/store/invoice/${encodeURIComponent(trxId)}`,
+        `${FAEZ_CONFIG.apiBase}/api/store/invoice/${encodeURIComponent(trxId)}`,
       );
       const data = await res.json();
       if (data.ok && data.invoice) found = data.invoice;
@@ -990,7 +990,7 @@ async function submitWarrantyRating(trxId) {
   if (STORE.isLiveBackend) {
     try {
       const res = await fetch(
-        `/api/store/invoice/${encodeURIComponent(trxId)}/rate`,
+        `${FAEZ_CONFIG.apiBase}/api/store/invoice/${encodeURIComponent(trxId)}/rate`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
@@ -1032,7 +1032,7 @@ async function submitWarrantyComplaint(trxId) {
   if (STORE.isLiveBackend) {
     try {
       const res = await fetch(
-        `/api/store/invoice/${encodeURIComponent(trxId)}/complain`,
+        `${FAEZ_CONFIG.apiBase}/api/store/invoice/${encodeURIComponent(trxId)}/complain`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

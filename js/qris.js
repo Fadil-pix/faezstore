@@ -4,7 +4,7 @@
 
 const FAEZ_CONFIG = {
   storeName: "FAEZ STORE",
-  botUsername: "faezstore_bot",
+  botUsername: "faezstoresbot",
   expireMinutes: 15,
   apiBase: window.location.hostname.includes("github.io")
     ? "https://zientax.my.id"
