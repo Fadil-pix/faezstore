@@ -115,30 +115,18 @@ async function loadStoreData() {
   } catch (err) {
     STORE.isLiveBackend = false;
     const local = getLocalStoreData();
-    // Recompute live stock counts from local.stocks
-    const products = local.products.map((p) => {
-      const readyCount = local.stocks.filter(
-        (s) => s.kode_produk === p.kode && !s.is_sold,
-      ).length;
-      return { ...p, stok: readyCount };
-    });
-    const rated = local.transactions.filter((t) => t.rating);
-    const avg = rated.length
-      ? (
-          rated.reduce((a, b) => a + Number(b.rating), 0) / rated.length
-        ).toFixed(1)
-      : "5.0";
-
+    const products = local.products || [];
+    const reviews = local.reviews || [];
     STORE.storeName = local.storeName || FAEZ_CONFIG.storeName;
     STORE.products = products;
     STORE.vouchers = local.vouchers || [];
-    STORE.reviews = local.transactions.filter((t) => t.rating);
+    STORE.reviews = reviews;
     STORE.stats = {
       totalProduk: products.length,
-      stokReady: products.reduce((a, b) => a + b.stok, 0),
-      avgRating: avg,
-      totalRatings: rated.length,
-      trxAll: local.transactions.length,
+      stokReady: products.reduce((a, b) => a + (b.stok || 0), 0),
+      avgRating: "5.0",
+      totalRatings: reviews.length,
+      trxAll: reviews.length,
     };
     setConnectionBadge(false);
   }
@@ -722,7 +710,8 @@ function simulateDemoPayment() {
 }
 
 function handleOrderPaidSuccess(trx) {
-  saveRecentInvoiceToBrowser(trx);
+  const buyerNote = (document.getElementById("chkBuyerNote")?.value || "").trim();
+  saveRecentInvoiceToBrowser(trx, buyerNote);
   renderRecentInvoicesList();
 
   document.getElementById("succTrxId").textContent = trx.trx_id;
@@ -788,52 +777,90 @@ function openProductInTelegram() {
 }
 
 // ==========================================================================
-// INVOICE LOOKUP, WARRANTY ACTIVATION & COMPLAINT
+// INVOICE LOOKUP, WARRANTY ACTIVATION & COMPLAINT (PRIVACY-PROTECTED)
 // ==========================================================================
+
+const MY_ORDERS_STORAGE_KEY = "faez_my_orders_v2";
+
+function purgeLegacyPublicCache() {
+  try {
+    localStorage.removeItem("faez_recent_invoices");
+    localStorage.removeItem("faez_local_db_v1");
+  } catch (e) {}
+}
 
 function getRecentInvoicesFromBrowser() {
   try {
-    return JSON.parse(localStorage.getItem("faez_recent_invoices") || "[]");
+    const list = JSON.parse(localStorage.getItem(MY_ORDERS_STORAGE_KEY) || "[]");
+    return Array.isArray(list) ? list : [];
   } catch (e) {
     return [];
   }
 }
 
-function saveRecentInvoiceToBrowser(trx) {
-  const list = getRecentInvoicesFromBrowser().filter(
-    (i) => i.trx_id !== trx.trx_id,
-  );
+function saveRecentInvoiceToBrowser(trx, verifierInput = "") {
+  if (!trx || !trx.trx_id) return;
+  const existing = getRecentInvoicesFromBrowser();
+  const prev = existing.find((i) => i.trx_id === trx.trx_id) || {};
+  const list = existing.filter((i) => i.trx_id !== trx.trx_id);
+
   list.unshift({
     trx_id: trx.trx_id,
     nama_produk: trx.nama_produk || trx.kode_produk,
     harga: trx.harga,
     created_at: trx.created_at,
+    access_token: trx.access_token || prev.access_token || "",
+    verifier: verifierInput || prev.verifier || "",
   });
-  localStorage.setItem(
-    "faez_recent_invoices",
-    JSON.stringify(list.slice(0, 10)),
-  );
+
+  try {
+    localStorage.setItem(
+      MY_ORDERS_STORAGE_KEY,
+      JSON.stringify(list.slice(0, 10)),
+    );
+  } catch (e) {}
+}
+
+function clearMyDeviceHistory() {
+  try {
+    localStorage.removeItem(MY_ORDERS_STORAGE_KEY);
+  } catch (e) {}
+  STORE.currentInvoice = null;
+  renderRecentInvoicesList();
+  const container = document.getElementById("invoiceDetailPanel");
+  if (container) {
+    container.innerHTML = `
+      <div style="text-align: center; padding: 42px 20px; color: var(--dim)">
+        <div style="font-size: 13px; color: var(--muted); font-weight: 500">
+          Riwayat pembelian di perangkat ini telah dihapus
+        </div>
+        <div style="font-size: 12px; margin-top: 4px">
+          Masukkan nomor invoice dan ID/Username Telegram Anda untuk memeriksa transaksi.
+        </div>
+      </div>
+    `;
+  }
+  toast("Riwayat perangkat berhasil dihapus");
 }
 
 function renderRecentInvoicesList() {
   const box = document.getElementById("recentInvoicesList");
+  const clearBtn = document.getElementById("btnClearMyHistory");
   if (!box) return;
-  const recent = getRecentInvoicesFromBrowser();
-  const fallbackList = recent.length
-    ? recent
-    : STORE.reviews.slice(0, 3).map((t) => ({
-        trx_id: t.trx_id,
-        nama_produk: t.nama_produk || t.kode_produk,
-        harga: t.harga,
-        created_at: t.created_at,
-      }));
 
-  if (fallbackList.length === 0) {
-    box.innerHTML = `<div style="color:var(--dim);font-size:12px;">Belum ada riwayat invoice di perangkat ini.</div>`;
+  // Hanya tampilkan pesanan milik pengguna di perangkat ini (TIDAK pernah mengambil dari transaksi/ulasan pengguna lain)
+  const myOrders = getRecentInvoicesFromBrowser();
+
+  if (clearBtn) {
+    clearBtn.style.display = myOrders.length > 0 ? "inline-flex" : "none";
+  }
+
+  if (myOrders.length === 0) {
+    box.innerHTML = `<div style="color:var(--dim);font-size:12px;">Belum ada riwayat pembelian Anda di perangkat ini.</div>`;
     return;
   }
 
-  box.innerHTML = fallbackList
+  box.innerHTML = myOrders
     .map(
       (item) => `
       <div
@@ -859,41 +886,75 @@ function jumpToInvoiceWarranty() {
   lookupInvoiceById(trxId);
 }
 
+function getSavedAuthForInvoice(trxId) {
+  const myOrders = getRecentInvoicesFromBrowser();
+  const item = myOrders.find(
+    (i) => String(i.trx_id || "").toUpperCase() === String(trxId || "").toUpperCase(),
+  );
+  const inputVerifier = (
+    document.getElementById("invoiceVerifierInput")?.value || ""
+  ).trim();
+  return {
+    token: item?.access_token || STORE.currentInvoice?.access_token || "",
+    verifier: inputVerifier || item?.verifier || "",
+  };
+}
+
 async function lookupInvoiceById(forcedId) {
   const inputEl = document.getElementById("invoiceSearchInput");
-  const trxId = (forcedId || inputEl.value || "").trim().toUpperCase();
-  if (!trxId) return toast("Masukkan nomor invoice (contoh: TRX-...)");
+  const trxId = (forcedId || inputEl?.value || "").trim().toUpperCase();
+  if (!trxId) return toast("Masukkan nomor invoice Anda (contoh: TRX-...)");
   if (inputEl) inputEl.value = trxId;
 
-  let found = null;
-  if (STORE.isLiveBackend) {
-    try {
-      const res = await fetch(
-        `${FAEZ_CONFIG.apiBase}/api/store/invoice/${encodeURIComponent(trxId)}`,
-      );
-      const data = await res.json();
-      if (data.ok && data.invoice) found = data.invoice;
-    } catch (e) {}
-  }
-
-  if (!found) {
-    const local = getLocalStoreData();
-    found = local.transactions.find((t) => t.trx_id.toUpperCase() === trxId);
-  }
-
+  const auth = getSavedAuthForInvoice(trxId);
   const container = document.getElementById("invoiceDetailPanel");
-  if (!found) {
-    container.innerHTML = `
-      <div style="text-align:center;padding:32px 16px;color:var(--muted);">
-        Invoice <code class="mono">${esc(trxId)}</code> tidak ditemukan. Pastikan kode invoice sudah benar.
-      </div>
-    `;
+
+  if (!STORE.isLiveBackend) {
+    if (container) {
+      container.innerHTML = `
+        <div style="text-align:center;padding:32px 16px;color:var(--muted);">
+          Server sedang tidak terhubung. Pastikan backend aktif untuk memverifikasi invoice <code class="mono">${esc(trxId)}</code>.
+        </div>
+      `;
+    }
     return;
   }
 
-  STORE.currentInvoice = found;
-  STORE.selectedStars = found.rating || 5;
-  renderInvoiceDetail(found);
+  try {
+    const qs = new URLSearchParams();
+    if (auth.token) qs.set("token", auth.token);
+    if (auth.verifier) qs.set("verifier", auth.verifier);
+
+    const res = await fetch(
+      `${FAEZ_CONFIG.apiBase}/api/store/invoice/${encodeURIComponent(trxId)}?${qs.toString()}`,
+    );
+    const data = await res.json();
+
+    if (!res.ok || !data.ok || !data.invoice) {
+      if (container) {
+        container.innerHTML = `
+          <div style="text-align:center;padding:36px 20px;color:var(--muted);">
+            <div style="font-size:14px;font-weight:600;color:var(--red);margin-bottom:6px;">
+              ${res.status === 403 ? "🔒 Verifikasi Kepemilikan Diperlukan" : "Invoice Tidak Ditemukan"}
+            </div>
+            <div style="font-size:12px;color:var(--dim);max-width:420px;margin:0 auto;line-height:1.5;">
+              ${esc(data.error || `Invoice ${trxId} tidak ditemukan.`)}
+            </div>
+          </div>
+        `;
+      }
+      return;
+    }
+
+    const found = data.invoice;
+    STORE.currentInvoice = found;
+    STORE.selectedStars = found.rating || 5;
+    saveRecentInvoiceToBrowser(found, auth.verifier);
+    renderRecentInvoicesList();
+    renderInvoiceDetail(found);
+  } catch (e) {
+    toast("Gagal menghubungi server untuk memeriksa invoice.");
+  }
 }
 
 function renderInvoiceDetail(inv) {
@@ -912,7 +973,7 @@ function renderInvoiceDetail(inv) {
   container.innerHTML = `
     <div class="panel-head" style="border-bottom:1px solid var(--border);padding-bottom:14px;">
       <div>
-        <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.04em;">Detail Transaksi</div>
+        <div style="font-size:11px;color:var(--dim);text-transform:uppercase;letter-spacing:0.04em;">Detail Transaksi Anda</div>
         <h2 class="mono" style="font-size:16px;margin-top:2px;">${esc(inv.trx_id)}</h2>
       </div>
       ${warrantyBadge}
@@ -986,6 +1047,7 @@ async function submitWarrantyRating(trxId) {
     document.getElementById("warrantyReviewInput")?.value || ""
   ).trim();
   const stars = STORE.selectedStars || 5;
+  const auth = getSavedAuthForInvoice(trxId);
 
   if (STORE.isLiveBackend) {
     try {
@@ -994,7 +1056,12 @@ async function submitWarrantyRating(trxId) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ rating: stars, review }),
+          body: JSON.stringify({
+            rating: stars,
+            review,
+            token: auth.token,
+            verifier: auth.verifier,
+          }),
         },
       );
       const data = await res.json();
@@ -1007,20 +1074,6 @@ async function submitWarrantyRating(trxId) {
       return toast(err.message);
     }
   }
-
-  // Local mode update
-  const local = getLocalStoreData();
-  const idx = local.transactions.findIndex((t) => t.trx_id === trxId);
-  if (idx !== -1) {
-    local.transactions[idx].rating = stars;
-    local.transactions[idx].review =
-      review || "Transaksi cepat & sesuai deskripsi.";
-    local.transactions[idx].warranty_active = 1;
-    saveLocalStoreData(local);
-    toast("Garansi resmi berhasil diaktifkan!");
-    loadStoreData();
-    lookupInvoiceById(trxId);
-  }
 }
 
 async function submitWarrantyComplaint(trxId) {
@@ -1028,6 +1081,7 @@ async function submitWarrantyComplaint(trxId) {
     `Masukkan detail kendala untuk invoice ${trxId} (akan diteruskan ke Admin):`,
   );
   if (!kendala) return;
+  const auth = getSavedAuthForInvoice(trxId);
 
   if (STORE.isLiveBackend) {
     try {
@@ -1036,7 +1090,11 @@ async function submitWarrantyComplaint(trxId) {
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ message: kendala }),
+          body: JSON.stringify({
+            message: kendala,
+            token: auth.token,
+            verifier: auth.verifier,
+          }),
         },
       );
       const data = await res.json();
@@ -1047,11 +1105,10 @@ async function submitWarrantyComplaint(trxId) {
       return toast(e.message);
     }
   }
-  toast("Laporan klaim garansi tercatat dan diteruskan ke Admin.");
 }
 
 // ==========================================================================
-// VOUCHERS & VERIFIED REVIEWS SECTIONS
+// VOUCHERS & VERIFIED REVIEWS SECTIONS (ANONYMIZED)
 // ==========================================================================
 
 function renderVouchersSection() {
@@ -1114,22 +1171,25 @@ function renderReviewsSection() {
     .slice(0, 12)
     .map((r) => {
       const stars = "★".repeat(Number(r.rating || 5));
-      const maskedUser = r.username
-        ? r.username.slice(0, 3) + "***"
-        : String(r.telegram_id || "User").slice(0, 4) + "***";
+      const maskedUser =
+        r.buyer_masked ||
+        (r.username ? r.username[0] + "***" : "Pembeli Terverifikasi");
+      const maskedTrx =
+        r.trx_masked ||
+        "TRX-••••" + String(r.trx_id || "0000").slice(-4);
 
       return `
         <div class="panel" style="display:flex;flex-direction:column;justify-content:space-between;">
           <div>
             <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:8px;">
               <span style="color:var(--amber);font-weight:700;font-size:13px;letter-spacing:1px;">${stars}</span>
-              <span class="pill pill-green">Garansi Aktif</span>
+              <span class="pill pill-green">Pembelian Terverifikasi</span>
             </div>
             <p style="font-size:13px;color:var(--text);margin-bottom:12px;line-height:1.5;">"${esc(r.review || "Pengiriman otomatis sangat cepat dan akun sesuai deskripsi.")}"</p>
           </div>
           <div style="border-top:1px solid var(--border-subtle);padding-top:10px;display:flex;align-items:center;justify-content:space-between;font-size:11px;color:var(--dim);">
             <span>Oleh <strong style="color:var(--muted);">${esc(maskedUser)}</strong> · ${esc(r.nama_produk || r.kode_produk)}</span>
-            <span class="mono">${esc(r.trx_id.slice(-7))}</span>
+            <span class="mono">${esc(maskedTrx)}</span>
           </div>
         </div>
       `;
@@ -1153,6 +1213,7 @@ document.addEventListener("keydown", (e) => {
 });
 
 document.addEventListener("DOMContentLoaded", () => {
+  purgeLegacyPublicCache();
   initTheme();
   loadStoreData();
 });

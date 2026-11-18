@@ -195,33 +195,62 @@
               <h2>Cek Pesanan &amp; Klaim Garansi</h2>
             </div>
             <div class="field">
-              <label>Nomor Invoice</label>
+              <label>Nomor Invoice Anda</label>
               <input
                 type="text"
                 id="invoiceSearchInput"
                 class="mono"
-                placeholder="TRX-1763401192841"
+                placeholder="Contoh: TRX-176340..."
                 onkeydown="if (event.key === 'Enter') lookupInvoiceById();"
               />
+            </div>
+            <div class="field">
+              <label>Verifikasi ID / Username Telegram Pembeli</label>
+              <input
+                type="text"
+                id="invoiceVerifierInput"
+                placeholder="Wajib jika beli via Bot / perangkat lain (Contoh: @username / ID)"
+                onkeydown="if (event.key === 'Enter') lookupInvoiceById();"
+              />
+              <div style="font-size: 11px; color: var(--dim); margin-top: 4px; line-height: 1.4;">
+                🔒 Demi privasi, detail akun hanya dapat dibuka oleh pemilik invoice.
+              </div>
             </div>
             <button
               class="btn"
               style="width: 100%; margin-bottom: 20px"
               onclick="lookupInvoiceById()"
             >
-              <i data-lucide="search" style="width: 14px"></i> Periksa Transaksi
+              <i data-lucide="search" style="width: 14px"></i> Periksa Transaksi Saya
             </button>
 
             <div style="border-top: 1px solid var(--border); padding-top: 16px">
               <div
                 style="
-                  font-size: 12px;
-                  font-weight: 600;
-                  color: var(--muted);
+                  display: flex;
+                  align-items: center;
+                  justify-content: space-between;
                   margin-bottom: 10px;
                 "
               >
-                Transaksi Terakhir
+                <span
+                  style="
+                    font-size: 12px;
+                    font-weight: 600;
+                    color: var(--muted);
+                  "
+                >
+                  Riwayat Pembelian Saya (Perangkat Ini)
+                </span>
+                <button
+                  type="button"
+                  id="btnClearMyHistory"
+                  class="btn btn-outline btn-sm"
+                  style="padding: 3px 8px; font-size: 11px; display: none"
+                  onclick="clearMyDeviceHistory()"
+                >
+                  Hapus Riwayat
+                </button>
               </div>
               <div id="recentInvoicesList"></div>
             </div>
@@ -232,7 +261,7 @@
               style="text-align: center; padding: 42px 20px; color: var(--dim)"
             >
               <i
-                data-lucide="file-text"
+                data-lucide="lock"
                 style="
                   width: 28px;
                   height: 28px;
@@ -243,11 +272,10 @@
               <div
                 style="font-size: 13px; color: var(--muted); font-weight: 500"
               >
-                Pilih atau masukkan nomor invoice
+                Privasi Transaksi Terlindungi
               </div>
               <div style="font-size: 12px; margin-top: 4px">
-                Lihat kembali data akun yang dibeli, aktifkan garansi dengan
-                memberi rating, atau laporkan kendala.
+                Masukkan nomor invoice Anda beserta ID/Username Telegram (atau pilih dari riwayat pembelian di perangkat Anda sendiri) untuk melihat data akun &amp; klaim garansi.
               </div>
             </div>
           </div>
@@ -502,13 +530,11 @@
           </div>
 
           <div class="field">
-            <label
-              >Username / ID Telegram (Opsional untuk sinkronisasi Bot)</label
-            >
+            <label>ID Telegram Anda (Untuk Notifikasi Bot &amp; Kunci Privasi Invoice)</label>
             <input
               type="text"
               id="chkBuyerNote"
-              placeholder="Contoh: @username atau 68683786"
+              placeholder="Contoh: 8143402518 (Bisa dilihat di menu Profil Bot)"
             />
           </div>
 
