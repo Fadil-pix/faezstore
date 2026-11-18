@@ -7,7 +7,7 @@ const FAEZ_CONFIG = {
   botUsername: "faezstoresbot",
   expireMinutes: 15,
   apiBase: window.location.hostname.includes("github.io")
-    ? "https://zientax.my.id"
+    ? "https://api.zientax.my.id"
     : "",
   qrisStatic:
     "00020101021126610014COM.GO-JEK.WWW01189360091436122211990210G6122211990303UMI51440014ID.CO.QRIS.WWW0215ID10253671311960303UMI5204899953033605802ID5915Faezig, Digital6006KLATEN61055746662070703A0163041830",
