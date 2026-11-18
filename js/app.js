@@ -14,7 +14,7 @@ let STORE = {
     stokReady: 0,
     avgRating: "5.0",
     totalRatings: 0,
-    trxAll: 0
+    trxAll: 0,
   },
   activeCategory: "ALL",
   onlyReady: false,
@@ -28,10 +28,10 @@ let STORE = {
     depositId: null,
     pollTimer: null,
     countdownTimer: null,
-    expiresAt: null
+    expiresAt: null,
   },
   currentInvoice: null,
-  selectedStars: 5
+  selectedStars: 5,
 };
 
 const rp = (n) => "Rp " + Number(n || 0).toLocaleString("id-ID");
@@ -69,16 +69,21 @@ function toggleTheme() {
 function updateThemeButton(theme) {
   const btn = document.getElementById("themeBtn");
   if (!btn) return;
-  btn.innerHTML = theme === "dark"
-    ? '<i data-lucide="sun" style="width:13px;"></i> Light'
-    : '<i data-lucide="moon" style="width:13px;"></i> Dark';
+  btn.innerHTML =
+    theme === "dark"
+      ? '<i data-lucide="sun" style="width:13px;"></i> Light'
+      : '<i data-lucide="moon" style="width:13px;"></i> Dark';
   if (window.lucide) lucide.createIcons();
 }
 
 // Section Navigation
 function switchSection(secId, btnEl) {
-  document.querySelectorAll(".section").forEach((s) => s.classList.remove("active"));
-  document.querySelectorAll(".tab-btn").forEach((b) => b.classList.remove("active"));
+  document
+    .querySelectorAll(".section")
+    .forEach((s) => s.classList.remove("active"));
+  document
+    .querySelectorAll(".tab-btn")
+    .forEach((b) => b.classList.remove("active"));
   const target = document.getElementById(secId);
   if (target) target.classList.add("active");
   if (btnEl) {
@@ -92,7 +97,9 @@ function switchSection(secId, btnEl) {
 // Load Storefront Data (API first, fallback to Local Seed DB)
 async function loadStoreData() {
   try {
-    const res = await fetch("/api/store/catalog", { headers: { Accept: "application/json" } });
+    const res = await fetch("/api/store/catalog", {
+      headers: { Accept: "application/json" },
+    });
     if (!res.ok) throw new Error("Fallback local");
     const data = await res.json();
     if (!data.ok) throw new Error("Invalid response");
@@ -110,12 +117,16 @@ async function loadStoreData() {
     const local = getLocalStoreData();
     // Recompute live stock counts from local.stocks
     const products = local.products.map((p) => {
-      const readyCount = local.stocks.filter((s) => s.kode_produk === p.kode && !s.is_sold).length;
+      const readyCount = local.stocks.filter(
+        (s) => s.kode_produk === p.kode && !s.is_sold,
+      ).length;
       return { ...p, stok: readyCount };
     });
     const rated = local.transactions.filter((t) => t.rating);
     const avg = rated.length
-      ? (rated.reduce((a, b) => a + Number(b.rating), 0) / rated.length).toFixed(1)
+      ? (
+          rated.reduce((a, b) => a + Number(b.rating), 0) / rated.length
+        ).toFixed(1)
       : "5.0";
 
     STORE.storeName = local.storeName || FAEZ_CONFIG.storeName;
@@ -127,7 +138,7 @@ async function loadStoreData() {
       stokReady: products.reduce((a, b) => a + b.stok, 0),
       avgRating: avg,
       totalRatings: rated.length,
-      trxAll: local.transactions.length
+      trxAll: local.transactions.length,
     };
     setConnectionBadge(false);
   }
@@ -157,17 +168,23 @@ function renderHeaderAndMetrics() {
   document.getElementById("storeTitle").textContent = STORE.storeName;
   const kats = new Set(STORE.products.map((p) => p.kategori || "Lainnya"));
 
-  document.getElementById("mTotalProduk").textContent = `${STORE.stats.totalProduk} Produk`;
-  document.getElementById("mTotalKategori").textContent = `${kats.size} kategori aktif`;
+  document.getElementById("mTotalProduk").textContent =
+    `${STORE.stats.totalProduk} Produk`;
+  document.getElementById("mTotalKategori").textContent =
+    `${kats.size} kategori aktif`;
 
-  document.getElementById("mStokReady").textContent = `${STORE.stats.stokReady} Akun`;
+  document.getElementById("mStokReady").textContent =
+    `${STORE.stats.stokReady} Akun`;
   document.getElementById("mStokSub").textContent = "Pengiriman otomatis 24/7";
 
-  document.getElementById("mRating").textContent = `${STORE.stats.avgRating} / 5.0`;
-  document.getElementById("mRatingSub").textContent = `${STORE.stats.totalRatings} ulasan terverifikasi`;
+  document.getElementById("mRating").textContent =
+    `${STORE.stats.avgRating} / 5.0`;
+  document.getElementById("mRatingSub").textContent =
+    `${STORE.stats.totalRatings} ulasan terverifikasi`;
 
   document.getElementById("mTrxAll").textContent = "QRIS Dinamis";
-  document.getElementById("mTrxSub").textContent = `${STORE.stats.trxAll}+ pesanan diproses`;
+  document.getElementById("mTrxSub").textContent =
+    `${STORE.stats.trxAll}+ pesanan diproses`;
 }
 
 function renderCategoryPills() {
@@ -205,7 +222,9 @@ function toggleReadyFilter() {
   STORE.onlyReady = !STORE.onlyReady;
   const btn = document.getElementById("btnReadyFilter");
   if (btn) {
-    btn.className = STORE.onlyReady ? "btn btn-sm btn-success" : "btn btn-sm btn-outline";
+    btn.className = STORE.onlyReady
+      ? "btn btn-sm btn-success"
+      : "btn btn-sm btn-outline";
   }
   renderCatalogGrid();
 }
@@ -227,7 +246,9 @@ function renderCatalogGrid() {
   let list = [...STORE.products];
 
   if (STORE.activeCategory !== "ALL") {
-    list = list.filter((p) => (p.kategori || "Lainnya") === STORE.activeCategory);
+    list = list.filter(
+      (p) => (p.kategori || "Lainnya") === STORE.activeCategory,
+    );
   }
 
   if (STORE.onlyReady) {
@@ -241,7 +262,7 @@ function renderCatalogGrid() {
         p.kode.toLowerCase().includes(q) ||
         p.nama.toLowerCase().includes(q) ||
         (p.kategori || "").toLowerCase().includes(q) ||
-        (p.deskripsi || "").toLowerCase().includes(q)
+        (p.deskripsi || "").toLowerCase().includes(q),
     );
   }
 
@@ -270,8 +291,8 @@ function renderCatalogGrid() {
       const stockPill = !hasStock
         ? '<span class="pill pill-red">Habis</span>'
         : p.stok <= 2
-        ? `<span class="pill pill-amber">Sisa ${p.stok} stok</span>`
-        : `<span class="pill pill-green">Ready · ${p.stok}</span>`;
+          ? `<span class="pill pill-amber">Sisa ${p.stok} stok</span>`
+          : `<span class="pill pill-green">Ready · ${p.stok}</span>`;
 
       return `
         <article class="product-card ${hasStock ? "" : "out-of-stock"}">
@@ -326,7 +347,8 @@ function resetCatalogFilters() {
 
 function openCheckoutModal(kode) {
   const prod = STORE.products.find((p) => p.kode === kode);
-  if (!prod || prod.stok <= 0) return toast("Maaf, stok produk ini sedang habis.");
+  if (!prod || prod.stok <= 0)
+    return toast("Maaf, stok produk ini sedang habis.");
 
   stopCheckoutTimers();
   STORE.checkout = {
@@ -337,7 +359,7 @@ function openCheckoutModal(kode) {
     depositId: null,
     pollTimer: null,
     countdownTimer: null,
-    expiresAt: null
+    expiresAt: null,
   };
 
   document.getElementById("chkVoucherInput").value = "";
@@ -354,7 +376,8 @@ function closeCheckoutModal() {
 
 function stopCheckoutTimers() {
   if (STORE.checkout.pollTimer) clearInterval(STORE.checkout.pollTimer);
-  if (STORE.checkout.countdownTimer) clearInterval(STORE.checkout.countdownTimer);
+  if (STORE.checkout.countdownTimer)
+    clearInterval(STORE.checkout.countdownTimer);
   STORE.checkout.pollTimer = null;
   STORE.checkout.countdownTimer = null;
 }
@@ -388,10 +411,14 @@ function updateCheckoutSummaryUI() {
   if (!p) return;
   const qty = STORE.checkout.qty;
   const subtotal = p.harga * qty;
-  const discount = Math.min(STORE.checkout.discount || 0, Math.max(subtotal - 1, 0));
+  const discount = Math.min(
+    STORE.checkout.discount || 0,
+    Math.max(subtotal - 1, 0),
+  );
   const total = subtotal - discount;
 
-  document.getElementById("chkProdCategory").textContent = p.kategori || "Lainnya";
+  document.getElementById("chkProdCategory").textContent =
+    p.kategori || "Lainnya";
   document.getElementById("chkProdCode").textContent = p.kode;
   document.getElementById("chkProdName").textContent = p.nama;
   document.getElementById("chkProdDesc").textContent = p.deskripsi || "-";
@@ -401,11 +428,13 @@ function updateCheckoutSummaryUI() {
   document.getElementById("btnQtyMinus").disabled = qty <= 1;
   document.getElementById("btnQtyPlus").disabled = qty >= p.stok;
 
-  document.getElementById("chkSubtotal").textContent = `${rp(p.harga)} × ${qty} = ${rp(subtotal)}`;
+  document.getElementById("chkSubtotal").textContent =
+    `${rp(p.harga)} × ${qty} = ${rp(subtotal)}`;
   const discRow = document.getElementById("chkDiscountRow");
   if (discount > 0 && STORE.checkout.voucherCode) {
     discRow.style.display = "flex";
-    document.getElementById("chkDiscountCode").textContent = STORE.checkout.voucherCode;
+    document.getElementById("chkDiscountCode").textContent =
+      STORE.checkout.voucherCode;
     document.getElementById("chkDiscountVal").textContent = `-${rp(discount)}`;
   } else {
     discRow.style.display = "none";
@@ -414,7 +443,10 @@ function updateCheckoutSummaryUI() {
 }
 
 async function applyCheckoutVoucher(silent = false) {
-  const raw = document.getElementById("chkVoucherInput").value.trim().toUpperCase();
+  const raw = document
+    .getElementById("chkVoucherInput")
+    .value.trim()
+    .toUpperCase();
   const statusEl = document.getElementById("chkVoucherStatus");
   const p = STORE.checkout.product;
   if (!p) return;
@@ -434,7 +466,7 @@ async function applyCheckoutVoucher(silent = false) {
       const res = await fetch("/api/store/voucher/check", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ kode: raw, subtotal })
+        body: JSON.stringify({ kode: raw, subtotal }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Voucher tidak valid");
@@ -468,7 +500,8 @@ async function applyCheckoutVoucher(silent = false) {
       statusEl.style.color = "var(--red)";
       statusEl.textContent = `Minimal belanja ${rp(v.min_belanja)}.`;
     } else {
-      let disk = v.tipe === "PERSEN" ? Math.floor((subtotal * v.nilai) / 100) : v.nilai;
+      let disk =
+        v.tipe === "PERSEN" ? Math.floor((subtotal * v.nilai) / 100) : v.nilai;
       if (disk >= subtotal) disk = Math.max(subtotal - 1, 0);
       STORE.checkout.voucherCode = v.kode;
       STORE.checkout.discount = disk;
@@ -500,8 +533,8 @@ async function createQrisOrder() {
           kode: p.kode,
           qty,
           voucher_code: voucherCode || null,
-          telegram_id: buyerContact
-        })
+          telegram_id: buyerContact,
+        }),
       });
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Gagal membuat tagihan QRIS");
@@ -513,12 +546,15 @@ async function createQrisOrder() {
         kodeUnik: data.kode_unik,
         totalBayar: data.total_bayar,
         expiresAt: Date.now() + (data.expire_minutes || 15) * 60 * 1000,
-        isDemo: false
+        isDemo: false,
       });
     } else {
       // Standalone/Local Dynamic QRIS Generation using real EMVCo CRC16
       const subtotal = p.harga * qty;
-      const discount = Math.min(STORE.checkout.discount || 0, Math.max(subtotal - 1, 0));
+      const discount = Math.min(
+        STORE.checkout.discount || 0,
+        Math.max(subtotal - 1, 0),
+      );
       const nominalAsli = subtotal - discount;
       const kodeUnik = Math.floor(Math.random() * 299) + 101;
       const totalBayar = nominalAsli + kodeUnik;
@@ -531,7 +567,7 @@ async function createQrisOrder() {
         kodeUnik,
         totalBayar,
         expiresAt: Date.now() + FAEZ_CONFIG.expireMinutes * 60 * 1000,
-        isDemo: true
+        isDemo: true,
       });
     }
   } catch (err) {
@@ -571,7 +607,8 @@ function startQrisTimers(isDemo) {
     const mins = Math.floor(rem / 60000);
     const secs = Math.floor((rem % 60000) / 1000);
     const el = document.getElementById("qrisCountdown");
-    if (el) el.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
+    if (el)
+      el.textContent = `${String(mins).padStart(2, "0")}:${String(secs).padStart(2, "0")}`;
     if (rem <= 0) {
       stopCheckoutTimers();
       toast("Waktu pembayaran QRIS telah habis.");
@@ -582,7 +619,10 @@ function startQrisTimers(isDemo) {
   STORE.checkout.countdownTimer = setInterval(updateClock, 1000);
 
   if (!isDemo) {
-    STORE.checkout.pollTimer = setInterval(() => checkPaymentStatus(true), 4000);
+    STORE.checkout.pollTimer = setInterval(
+      () => checkPaymentStatus(true),
+      4000,
+    );
   }
 }
 
@@ -598,13 +638,17 @@ async function checkPaymentStatus(silent = false) {
         stopCheckoutTimers();
         handleOrderPaidSuccess(data.transaction);
       } else if (!silent) {
-        toast("Pembayaran belum terdeteksi. Pastikan nominal sesuai kode unik.");
+        toast(
+          "Pembayaran belum terdeteksi. Pastikan nominal sesuai kode unik.",
+        );
       }
     } catch (e) {
       if (!silent) toast("Gagal memeriksa status pembayaran.");
     }
   } else if (!silent) {
-    toast("Gunakan tombol 'Simulasikan Bayar Lunas' untuk menguji pengiriman akun otomatis.");
+    toast(
+      "Gunakan tombol 'Simulasikan Bayar Lunas' untuk menguji pengiriman akun otomatis.",
+    );
   }
 }
 
@@ -613,7 +657,9 @@ function simulateDemoPayment() {
   if (!p) return;
   const qty = STORE.checkout.qty;
   const local = getLocalStoreData();
-  const avail = local.stocks.filter((s) => s.kode_produk === p.kode && !s.is_sold);
+  const avail = local.stocks.filter(
+    (s) => s.kode_produk === p.kode && !s.is_sold,
+  );
 
   if (avail.length < qty) {
     return toast("Stok di database lokal tidak mencukupi.");
@@ -631,18 +677,25 @@ function simulateDemoPayment() {
   });
 
   if (STORE.checkout.voucherCode) {
-    const vIdx = local.vouchers.findIndex((v) => v.kode === STORE.checkout.voucherCode);
+    const vIdx = local.vouchers.findIndex(
+      (v) => v.kode === STORE.checkout.voucherCode,
+    );
     if (vIdx !== -1) local.vouchers[vIdx].terpakai += 1;
   }
 
   const subtotal = p.harga * qty;
-  const discount = Math.min(STORE.checkout.discount || 0, Math.max(subtotal - 1, 0));
+  const discount = Math.min(
+    STORE.checkout.discount || 0,
+    Math.max(subtotal - 1, 0),
+  );
   const finalPrice = subtotal - discount;
 
   const newTrx = {
     trx_id: trxId,
-    telegram_id: document.getElementById("chkBuyerNote").value.trim() || "WEB-BUYER",
-    username: document.getElementById("chkBuyerNote").value.trim() || "web_customer",
+    telegram_id:
+      document.getElementById("chkBuyerNote").value.trim() || "WEB-BUYER",
+    username:
+      document.getElementById("chkBuyerNote").value.trim() || "web_customer",
     kode_produk: p.kode,
     nama_produk: p.nama,
     harga: finalPrice,
@@ -652,7 +705,7 @@ function simulateDemoPayment() {
     review: null,
     warranty_active: 0,
     created_at: new Date().toISOString(),
-    accounts: taken.map((s) => s.data_akun)
+    accounts: taken.map((s) => s.data_akun),
   };
 
   local.transactions.unshift(newTrx);
@@ -667,7 +720,8 @@ function handleOrderPaidSuccess(trx) {
   renderRecentInvoicesList();
 
   document.getElementById("succTrxId").textContent = trx.trx_id;
-  document.getElementById("succProdName").textContent = `${trx.nama_produk || trx.kode_produk} ×${trx.qty || 1}`;
+  document.getElementById("succProdName").textContent =
+    `${trx.nama_produk || trx.kode_produk} ×${trx.qty || 1}`;
   document.getElementById("succTotalPaid").textContent = rp(trx.harga);
   document.getElementById("succAccountsList").textContent = (trx.accounts || [])
     .map((acc, i) => `${i + 1}. ${acc}`)
@@ -707,9 +761,11 @@ function downloadInvoiceTxt(trx = STORE.currentInvoice) {
     "------------------------------------------",
     "DATA AKUN / VOUCHER:",
     ...(trx.accounts || []).map((a, i) => `${i + 1}. ${a}`),
-    "=========================================="
+    "==========================================",
   ];
-  const blob = new Blob([lines.join("\n")], { type: "text/plain;charset=utf-8" });
+  const blob = new Blob([lines.join("\n")], {
+    type: "text/plain;charset=utf-8",
+  });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = `Invoice_${trx.trx_id}.txt`;
@@ -718,8 +774,10 @@ function downloadInvoiceTxt(trx = STORE.currentInvoice) {
 
 function openProductInTelegram() {
   const p = STORE.checkout.product;
-  const botUser = STORE.botUsername || "faezstore_bot";
-  const url = p ? `https://t.me/${botUser}?start=buy_${p.kode}` : `https://t.me/${botUser}`;
+  const botUser = STORE.botUsername || "faezstoresbot";
+  const url = p
+    ? `https://t.me/${botUser}?start=buy_${p.kode}`
+    : `https://t.me/${botUser}`;
   window.open(url, "_blank", "noopener");
 }
 
@@ -736,14 +794,19 @@ function getRecentInvoicesFromBrowser() {
 }
 
 function saveRecentInvoiceToBrowser(trx) {
-  const list = getRecentInvoicesFromBrowser().filter((i) => i.trx_id !== trx.trx_id);
+  const list = getRecentInvoicesFromBrowser().filter(
+    (i) => i.trx_id !== trx.trx_id,
+  );
   list.unshift({
     trx_id: trx.trx_id,
     nama_produk: trx.nama_produk || trx.kode_produk,
     harga: trx.harga,
-    created_at: trx.created_at
+    created_at: trx.created_at,
   });
-  localStorage.setItem("faez_recent_invoices", JSON.stringify(list.slice(0, 10)));
+  localStorage.setItem(
+    "faez_recent_invoices",
+    JSON.stringify(list.slice(0, 10)),
+  );
 }
 
 function renderRecentInvoicesList() {
@@ -756,7 +819,7 @@ function renderRecentInvoicesList() {
         trx_id: t.trx_id,
         nama_produk: t.nama_produk || t.kode_produk,
         harga: t.harga,
-        created_at: t.created_at
+        created_at: t.created_at,
       }));
 
   if (fallbackList.length === 0) {
@@ -777,7 +840,7 @@ function renderRecentInvoicesList() {
         </div>
         <span class="btn btn-outline btn-sm">Buka</span>
       </div>
-    `
+    `,
     )
     .join("");
 }
@@ -799,7 +862,9 @@ async function lookupInvoiceById(forcedId) {
   let found = null;
   if (STORE.isLiveBackend) {
     try {
-      const res = await fetch(`/api/store/invoice/${encodeURIComponent(trxId)}`);
+      const res = await fetch(
+        `/api/store/invoice/${encodeURIComponent(trxId)}`,
+      );
       const data = await res.json();
       if (data.ok && data.invoice) found = data.invoice;
     } catch (e) {}
@@ -878,7 +943,7 @@ function renderInvoiceDetail(inv) {
               .map(
                 (n) => `
               <button type="button" class="star-btn ${n === STORE.selectedStars ? "active" : ""}" onclick="selectWarrantyStar(${n})">★ ${n}</button>
-            `
+            `,
               )
               .join("")}
           </div>
@@ -911,16 +976,21 @@ function selectWarrantyStar(n) {
 }
 
 async function submitWarrantyRating(trxId) {
-  const review = (document.getElementById("warrantyReviewInput")?.value || "").trim();
+  const review = (
+    document.getElementById("warrantyReviewInput")?.value || ""
+  ).trim();
   const stars = STORE.selectedStars || 5;
 
   if (STORE.isLiveBackend) {
     try {
-      const res = await fetch(`/api/store/invoice/${encodeURIComponent(trxId)}/rate`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ rating: stars, review })
-      });
+      const res = await fetch(
+        `/api/store/invoice/${encodeURIComponent(trxId)}/rate`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ rating: stars, review }),
+        },
+      );
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Gagal menyimpan rating");
       toast("Garansi resmi berhasil diaktifkan!");
@@ -937,7 +1007,8 @@ async function submitWarrantyRating(trxId) {
   const idx = local.transactions.findIndex((t) => t.trx_id === trxId);
   if (idx !== -1) {
     local.transactions[idx].rating = stars;
-    local.transactions[idx].review = review || "Transaksi cepat & sesuai deskripsi.";
+    local.transactions[idx].review =
+      review || "Transaksi cepat & sesuai deskripsi.";
     local.transactions[idx].warranty_active = 1;
     saveLocalStoreData(local);
     toast("Garansi resmi berhasil diaktifkan!");
@@ -947,16 +1018,21 @@ async function submitWarrantyRating(trxId) {
 }
 
 async function submitWarrantyComplaint(trxId) {
-  const kendala = prompt(`Masukkan detail kendala untuk invoice ${trxId} (akan diteruskan ke Admin):`);
+  const kendala = prompt(
+    `Masukkan detail kendala untuk invoice ${trxId} (akan diteruskan ke Admin):`,
+  );
   if (!kendala) return;
 
   if (STORE.isLiveBackend) {
     try {
-      const res = await fetch(`/api/store/invoice/${encodeURIComponent(trxId)}/complain`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: kendala })
-      });
+      const res = await fetch(
+        `/api/store/invoice/${encodeURIComponent(trxId)}/complain`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ message: kendala }),
+        },
+      );
       const data = await res.json();
       if (!data.ok) throw new Error(data.error || "Gagal mengirim laporan");
       toast("Laporan klaim garansi telah diteruskan ke Telegram Admin.");
@@ -984,8 +1060,12 @@ function renderVouchersSection() {
   grid.innerHTML = STORE.vouchers
     .map((v) => {
       const sisa = Math.max(0, v.kuota - v.terpakai);
-      const pct = Math.min(100, Math.round((v.terpakai / Math.max(1, v.kuota)) * 100));
-      const labelPot = v.tipe === "PERSEN" ? `Diskon ${v.nilai}%` : `Potongan ${rp(v.nilai)}`;
+      const pct = Math.min(
+        100,
+        Math.round((v.terpakai / Math.max(1, v.kuota)) * 100),
+      );
+      const labelPot =
+        v.tipe === "PERSEN" ? `Diskon ${v.nilai}%` : `Potongan ${rp(v.nilai)}`;
 
       return `
         <div class="panel" style="display:flex;flex-direction:column;justify-content:space-between;">
@@ -1053,7 +1133,10 @@ function renderReviewsSection() {
 
 // Keyboard shortcut '/' or Ctrl+K to focus search
 document.addEventListener("keydown", (e) => {
-  if ((e.key === "/" || (e.ctrlKey && e.key.toLowerCase() === "k")) && !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)) {
+  if (
+    (e.key === "/" || (e.ctrlKey && e.key.toLowerCase() === "k")) &&
+    !["INPUT", "TEXTAREA"].includes(document.activeElement?.tagName)
+  ) {
     e.preventDefault();
     const s = document.getElementById("searchCatalog");
     if (s) s.focus();
