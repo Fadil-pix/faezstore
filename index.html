@@ -1,775 +1,268 @@
 <!doctype html>
-<html lang="id" data-theme="dark">
+<html lang="id">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>FaezStore — Katalog Produk Digital Otomatis</title>
+    <title>FaezStore — Auto-Order Produk Digital Otomatis 24/7</title>
+    <meta name="description" content="FaezStore menyediakan produk digital otomatis 24 jam dengan pembayaran QRIS dinamis, harga grosir bertingkat, flash sale, ulasan terverifikasi, dan garansi resmi." />
+    <link rel="canonical" href="https://faezstore.cloud/" />
     <link rel="icon" type="image/svg+xml" href="assets/favicon.svg" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&display=swap"
-      rel="stylesheet"
-    />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <link rel="stylesheet" href="css/style.css" />
   </head>
   <body>
-    <div class="wrap">
-      <!-- Topbar -->
-      <header>
-        <div class="brand">
-          <div class="brand-mark">
-            <i data-lucide="command" style="width: 18px"></i>
-          </div>
-          <div>
-            <div class="brand-title-row">
-              <h1 id="storeTitle">FAEZ STORE</h1>
-              <span id="connBadge" class="pill pill-neutral"
-                ><span class="status-dot"></span> Katalog Aktif</span
-              >
-            </div>
-            <p>Toko Produk Digital &amp; Pengiriman Otomatis 24 Jam</p>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button
-            class="btn btn-outline btn-sm"
-            onclick="switchSection('secInvoice')"
-          >
-            <i data-lucide="receipt" style="width: 13px"></i> Cek Invoice
-          </button>
-          <a
-            href="https://t.me/faezstoresbot"
-            target="_blank"
-            rel="noopener"
-            class="btn btn-outline btn-sm"
-          >
-            <i data-lucide="send" style="width: 13px"></i> Bot Telegram
-          </a>
-          <button
-            id="themeBtn"
-            class="btn btn-outline btn-sm"
-            onclick="toggleTheme()"
-          >
-            <i data-lucide="sun" style="width: 13px"></i> Light
-          </button>
-
+    <div class="page-shell">
+      <header class="navbar">
+        <a class="brand" href="#shop" onclick="resetFilters()">
+          <span class="brand-icon"><i data-lucide="triangle" style="width:14px;fill:#fff"></i></span>
+          <span id="storeTitle">FaezStore</span>
+          <span id="connDot" class="live-dot" title="Status Koneksi"></span>
+        </a>
+        <nav class="nav-links">
+          <button class="active" data-nav="ALL" onclick="setFilterMode('ALL', this)">Shop</button>
+          <button data-nav="BEST_SELLER" onclick="setFilterMode('BEST_SELLER', this)">Terlaris</button>
+          <button data-nav="DISCOUNT" onclick="setFilterMode('DISCOUNT', this)">Flash Sale</button>
+          <button onclick="openVoucherModal()">Voucher</button>
+          <button onclick="openInvoiceModal()">Pesanan Saya</button>
+        </nav>
+        <div class="nav-icons">
+          <button class="icon-btn" title="Cari Produk" onclick="document.getElementById('searchInput').focus()"><i data-lucide="search" style="width:16px"></i></button>
+          <button class="icon-btn" title="Keranjang Belanja" onclick="openCartModal()"><i data-lucide="shopping-cart" style="width:16px"></i><span class="cart-badge" id="cartCount">0</span></button>
+          <button class="icon-btn" title="Pesanan & Garansi" onclick="openInvoiceModal()"><i data-lucide="receipt" style="width:16px"></i></button>
+          <a id="botTopLink" class="icon-btn" title="Order via Bot Telegram" href="https://t.me/faezstoresbot" target="_blank" rel="noopener"><i data-lucide="send" style="width:15px"></i></a>
         </div>
       </header>
 
-      <!-- Bento Metrics -->
-      <div class="metrics">
-        <div class="metric">
-          <div class="metric-label">
-            <span>Katalog Tersedia</span
-            ><i
-              data-lucide="package"
-              style="width: 14px; color: var(--accent)"
-            ></i>
-          </div>
-          <div class="metric-val" id="mTotalProduk">15 Produk</div>
-          <div class="metric-foot" id="mTotalKategori">4 kategori aktif</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">
-            <span>Stok Siap Kirim</span
-            ><i
-              data-lucide="layers"
-              style="width: 14px; color: var(--green)"
-            ></i>
-          </div>
-          <div class="metric-val" id="mStokReady">31 Akun</div>
-          <div class="metric-foot" id="mStokSub">Pengiriman otomatis 24/7</div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">
-            <span>Rating &amp; Garansi</span
-            ><i data-lucide="star" style="width: 14px; color: var(--amber)"></i>
-          </div>
-          <div class="metric-val" id="mRating">5.0 / 5.0</div>
-          <div class="metric-foot" id="mRatingSub">
-            Ulasan pelanggan terverifikasi
-          </div>
-        </div>
-        <div class="metric">
-          <div class="metric-label">
-            <span>Metode Pembayaran</span
-            ><i
-              data-lucide="qr-code"
-              style="width: 14px; color: var(--green)"
-            ></i>
-          </div>
-          <div class="metric-val" id="mTrxAll">QRIS Dinamis</div>
-          <div class="metric-foot" id="mTrxSub">Verifikasi mutasi instan</div>
-        </div>
-      </div>
+      <section class="hero-wrap"><div class="hero-display-text">Shop</div></section>
 
-      <!-- Navigation Tabs -->
-      <div class="nav-row">
-        <div class="nav-bar">
-          <button
-            class="tab-btn active"
-            data-target="secKatalog"
-            onclick="switchSection('secKatalog', this)"
-          >
-            <i data-lucide="layout-grid" style="width: 14px"></i> Katalog Produk
-          </button>
-          <button
-            class="tab-btn"
-            data-target="secInvoice"
-            onclick="switchSection('secInvoice', this)"
-          >
-            <i data-lucide="receipt" style="width: 14px"></i> Cek Invoice &amp;
-            Garansi
-          </button>
-          <button
-            class="tab-btn"
-            data-target="secVoucher"
-            onclick="switchSection('secVoucher', this)"
-          >
-            <i data-lucide="ticket" style="width: 14px"></i> Voucher Promo
-          </button>
-          <button
-            class="tab-btn"
-            data-target="secUlasan"
-            onclick="switchSection('secUlasan', this)"
-          >
-            <i data-lucide="message-square" style="width: 14px"></i> Ulasan
-            Pelanggan
-          </button>
-          <button
-            class="tab-btn"
-            data-target="secPanduan"
-            onclick="switchSection('secPanduan', this)"
-          >
-            <i data-lucide="shield-check" style="width: 14px"></i> Panduan &amp;
-            Ketentuan
-          </button>
+      <section class="shop-header-bar" id="shop">
+        <h1>Give All You Need</h1>
+        <div class="search-pill">
+          <i data-lucide="search" style="width:15px;color:#71717a"></i>
+          <input id="searchInput" type="text" placeholder="Search on FaezStore..." oninput="handleSearch(this.value)" />
+          <button class="btn-black" onclick="handleSearch(document.getElementById('searchInput').value)">Search</button>
         </div>
-      </div>
+      </section>
 
-      <!-- SECTION 1: KATALOG PRODUK -->
-      <section id="secKatalog" class="section active">
-        <div class="catalog-toolbar">
-          <div id="categoryPills" class="cat-pills"></div>
-          <div class="toolbar-controls">
-            <button
-              id="btnReadyFilter"
-              class="btn btn-sm btn-outline"
-              onclick="toggleReadyFilter()"
-            >
-              <i data-lucide="check-circle-2" style="width: 13px"></i> Stok
-              Ready
+      <main class="shop-layout">
+        <aside class="sidebar">
+          <h3>Category</h3>
+          <div id="categorySidebar" class="cat-list"></div>
+          <div class="cat-divider"></div>
+          <div class="cat-list">
+            <button class="cat-item" data-special="NEW" onclick="setFilterMode('NEW', this)"><span class="cat-left"><i data-lucide="sparkles" style="width:15px"></i> New Arrival</span></button>
+            <button class="cat-item" data-special="BEST_SELLER" onclick="setFilterMode('BEST_SELLER', this)"><span class="cat-left"><i data-lucide="flame" style="width:15px"></i> Best Seller</span></button>
+            <button class="cat-item" data-special="DISCOUNT" onclick="setFilterMode('DISCOUNT', this)">
+              <span class="cat-left"><i data-lucide="percent" style="width:15px"></i> On Discount</span>
+              <span id="discountCountBadge" class="cat-count" style="display:none">0</span>
             </button>
-            <select
-              style="width: auto; padding: 6px 10px; font-size: 12px"
-              onchange="handleSortChange(this.value)"
-            >
-              <option value="default">Urutkan: Kategori</option>
-              <option value="price_asc">Harga: Terendah</option>
-              <option value="price_desc">Harga: Tertinggi</option>
-              <option value="stock_desc">Stok: Terbanyak</option>
-            </select>
-            <div class="search-box">
-              <i data-lucide="search"></i>
-              <input
-                type="text"
-                id="searchCatalog"
-                placeholder="Cari kode atau nama produk... (/)"
-                oninput="handleSearchInput(this.value)"
-              />
-            </div>
+          </div>
+        </aside>
+        <section>
+          <div id="productGrid" class="product-grid"></div>
+          <div id="paginationBar" class="pagination-bar"></div>
+        </section>
+      </main>
+
+      <section class="section-block">
+        <div class="section-head">
+          <h2>Explore our recommendations</h2>
+          <div style="display:flex;gap:8px">
+            <button class="icon-btn" onclick="scrollRec(-300)" aria-label="Geser Kiri"><i data-lucide="arrow-left" style="width:15px"></i></button>
+            <button class="icon-btn" onclick="scrollRec(300)" aria-label="Geser Kanan"><i data-lucide="arrow-right" style="width:15px"></i></button>
           </div>
         </div>
-
-        <div id="catalogGrid" class="catalog-grid"></div>
+        <div id="recRail" class="rec-rail"></div>
       </section>
 
-      <!-- SECTION 2: CEK INVOICE & GARANSI -->
-      <section id="secInvoice" class="section">
-        <div class="split">
-          <div class="panel">
-            <div class="panel-head">
-              <h2>Cek Pesanan &amp; Klaim Garansi</h2>
-            </div>
-            <div class="field">
-              <label>Nomor Invoice Anda</label>
-              <input
-                type="text"
-                id="invoiceSearchInput"
-                class="mono"
-                placeholder="Contoh: TRX-176340..."
-                onkeydown="if (event.key === 'Enter') lookupInvoiceById();"
-              />
-            </div>
-            <div class="field">
-              <label>Verifikasi ID / Username Telegram Pembeli</label>
-              <input
-                type="text"
-                id="invoiceVerifierInput"
-                placeholder="Wajib jika beli via Bot / perangkat lain (Contoh: @username / ID)"
-                onkeydown="if (event.key === 'Enter') lookupInvoiceById();"
-              />
-              <div style="font-size: 11px; color: var(--dim); margin-top: 4px; line-height: 1.4;">
-                🔒 Demi privasi, detail akun hanya dapat dibuka oleh pemilik invoice.
-              </div>
-            </div>
-            <button
-              class="btn"
-              style="width: 100%; margin-bottom: 20px"
-              onclick="lookupInvoiceById()"
-            >
-              <i data-lucide="search" style="width: 14px"></i> Periksa Transaksi Saya
-            </button>
-
-            <div style="border-top: 1px solid var(--border); padding-top: 16px">
-              <div
-                style="
-                  display: flex;
-                  align-items: center;
-                  justify-content: space-between;
-                  margin-bottom: 10px;
-                "
-              >
-                <span
-                  style="
-                    font-size: 12px;
-                    font-weight: 600;
-                    color: var(--muted);
-                  "
-                >
-                  Riwayat Pembelian Saya (Perangkat Ini)
-                </span>
-                <button
-                  type="button"
-                  id="btnClearMyHistory"
-                  class="btn btn-outline btn-sm"
-                  style="padding: 3px 8px; font-size: 11px; display: none"
-                  onclick="clearMyDeviceHistory()"
-                >
-                  Hapus Riwayat
-                </button>
-              </div>
-              <div id="recentInvoicesList"></div>
-            </div>
-          </div>
-
-          <div id="invoiceDetailPanel" class="panel">
-            <div
-              style="text-align: center; padding: 42px 20px; color: var(--dim)"
-            >
-              <i
-                data-lucide="lock"
-                style="
-                  width: 28px;
-                  height: 28px;
-                  margin-bottom: 8px;
-                  opacity: 0.6;
-                "
-              ></i>
-              <div
-                style="font-size: 13px; color: var(--muted); font-weight: 500"
-              >
-                Privasi Transaksi Terlindungi
-              </div>
-              <div style="font-size: 12px; margin-top: 4px">
-                Masukkan nomor invoice Anda beserta ID/Username Telegram (atau pilih dari riwayat pembelian di perangkat Anda sendiri) untuk melihat data akun &amp; klaim garansi.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- SECTION 3: VOUCHER PROMO -->
-      <section id="secVoucher" class="section">
-        <div id="voucherGrid" class="voucher-grid"></div>
-      </section>
-
-      <!-- SECTION 4: ULASAN PELANGGAN -->
-      <section id="secUlasan" class="section">
-        <div id="reviewGrid" class="review-grid"></div>
-      </section>
-
-      <!-- SECTION 5: PANDUAN & KETENTUAN -->
-      <section id="secPanduan" class="section">
-        <div class="guide-grid">
-          <div class="panel">
-            <div class="panel-head">
-              <h2>1. Pilih Produk &amp; Kuantitas</h2>
-              <span class="pill pill-neutral mono">STEP 01</span>
-            </div>
-            <p style="color: var(--muted); font-size: 12px; line-height: 1.6">
-              Pilih sub-produk digital yang berstatus <b>Ready</b>, atur jumlah
-              pembelian sesuai kebutuhan, dan masukkan kode voucher promo jika
-              tersedia.
-            </p>
-          </div>
-
-          <div class="panel">
-            <div class="panel-head">
-              <h2>2. Scan QRIS Dinamis</h2>
-              <span class="pill pill-neutral mono">STEP 02</span>
-            </div>
-            <p style="color: var(--muted); font-size: 12px; line-height: 1.6">
-              Sistem otomatis menghasilkan kode QRIS Dinamis beserta 3 digit
-              kode unik. Mendukung GoPay, DANA, OVO, ShopeePay, dan seluruh
-              aplikasi M-Banking.
-            </p>
-          </div>
-
-          <div class="panel">
-            <div class="panel-head">
-              <h2>3. Akun Tampil Otomatis</h2>
-              <span class="pill pill-neutral mono">STEP 03</span>
-            </div>
-            <p style="color: var(--muted); font-size: 12px; line-height: 1.6">
-              Begitu pembayaran sesuai nominal terdeteksi oleh sistem, data
-              kredensial akun atau voucher langsung muncul di layar dan dapat
-              diunduh sebagai file <code>.txt</code>.
-            </p>
-          </div>
-
-          <div class="panel" style="grid-column: 1 / -1">
-            <div class="panel-head">
-              <h2>Ketentuan Garansi Resmi</h2>
-              <span class="pill pill-green">Wajib Rating Bintang</span>
-            </div>
-            <div
-              style="
-                display: grid;
-                grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-                gap: 14px;
-                font-size: 12px;
-                color: var(--muted);
-              "
-            >
-              <div
-                style="
-                  background: var(--bg);
-                  border: 1px solid var(--border);
-                  border-radius: 10px;
-                  padding: 14px;
-                "
-              >
-                <strong
-                  style="color: var(--text); display: block; margin-bottom: 4px"
-                  >Aktivasi via Rating</strong
-                >
-                Setiap transaksi wajib diberikan rating bintang (1–5) pada menu
-                <b>Cek Invoice &amp; Garansi</b> atau melalui Bot Telegram untuk
-                mengaktifkan status Garansi Resmi.
-              </div>
-              <div
-                style="
-                  background: var(--bg);
-                  border: 1px solid var(--border);
-                  border-radius: 10px;
-                  padding: 14px;
-                "
-              >
-                <strong
-                  style="color: var(--text); display: block; margin-bottom: 4px"
-                  >Aturan Penggunaan Akun</strong
-                >
-                Dilarang mengubah informasi profil utama, email, atau password
-                pada akun berjenis Sharing agar garansi tetap berlaku penuh
-                selama masa langganan.
-              </div>
-              <div
-                style="
-                  background: var(--bg);
-                  border: 1px solid var(--border);
-                  border-radius: 10px;
-                  padding: 14px;
-                "
-              >
-                <strong
-                  style="color: var(--text); display: block; margin-bottom: 4px"
-                  >Klaim &amp; Penggantian</strong
-                >
-                Jika terjadi kendala pada akun yang bergaransi aktif, gunakan
-                tombol <b>Ajukan Klaim</b> pada halaman Invoice agar laporan
-                langsung diteruskan ke Admin.
-              </div>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- Footer -->
-      <footer>
+      <section class="cta-dark">
         <div>
-          <strong style="color: var(--text)">FAEZ STORE</strong> · Sistem
-          Katalog &amp; Auto-Order Digital
+          <h2>Ready to Get<br />Our New Stuff?</h2>
+          <div class="cta-form">
+            <input id="quickInvoiceInput" type="text" placeholder="Cek No. Invoice (TRX-...)" onkeydown="if (event.key === 'Enter') quickTrackInvoice();" />
+            <button class="btn-black" onclick="quickTrackInvoice()">Cek</button>
+          </div>
         </div>
-        <div style="display: flex; gap: 14px">
-          <a href="https://t.me/faezstoresbot" target="_blank" rel="noopener"
-            >Telegram Bot</a
-          >
-          <a
-            href="#"
-            onclick="
-              switchSection('secInvoice');
-              return false;
-            "
-            >Cek Invoice</a
-          >
+        <div class="cta-desc">
+          <strong>FaezStore Digital Otomatis 24/7</strong>
+          Semua produk dikirim otomatis begitu pembayaran QRIS terverifikasi. Nikmati harga grosir bertingkat, flash sale berbatas waktu, ulasan terverifikasi, dan klaim garansi resmi.
+        </div>
+      </section>
 
+      <footer class="site-footer">
+        <div class="footer-top">
+          <div class="footer-cols">
+            <div class="footer-col">
+              <h4>Store</h4>
+              <button onclick="setFilterMode('ALL')">All Products</button>
+              <button onclick="setFilterMode('BEST_SELLER')">Best Seller</button>
+              <button onclick="setFilterMode('DISCOUNT')">Flash Sale</button>
+              <button onclick="openVoucherModal()">Voucher Promo</button>
+            </div>
+            <div class="footer-col">
+              <h4>Support</h4>
+              <button onclick="openInvoiceModal()">Pesanan Saya</button>
+              <button onclick="openInvoiceModal()">Klaim Garansi</button>
+              <a id="botFooterLink" href="https://t.me/faezstoresbot" target="_blank" rel="noopener">Bot Telegram</a>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:12.5px;font-weight:700;margin-bottom:6px">Connect</div>
+            <div class="social-row">
+              <a class="social-circle" href="https://t.me/faezstoresbot" target="_blank" rel="noopener" title="Telegram"><i data-lucide="send" style="width:14px"></i></a>
+              <button class="social-circle" style="border:none;cursor:pointer" onclick="openVoucherModal()" title="Voucher"><i data-lucide="ticket" style="width:14px"></i></button>
+              <button class="social-circle" style="border:none;cursor:pointer" onclick="openInvoiceModal()" title="Garansi"><i data-lucide="shield-check" style="width:14px"></i></button>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">
+          <div>Copyright © 2026 FaezStore. All Rights Reserved.</div>
+          <div style="display:flex;gap:18px"><span>Auto-Delivery 24/7</span><span>Dynamic QRIS Verified</span></div>
         </div>
       </footer>
     </div>
 
-    <!-- MODAL CHECKOUT & QRIS -->
-    <div id="checkoutModal" class="modal-bg">
+    <div id="detailModal" class="modal-bg" onclick="if(event.target===this)closeModal('detailModal')"><div class="modal-box wide" id="detailModalBody"></div></div>
+
+    <div id="cartModal" class="modal-bg" onclick="if(event.target===this)closeModal('cartModal')">
       <div class="modal-box">
-        <!-- STEP 1: KONFIRMASI PESANAN -->
+        <div class="modal-head"><h2>Keranjang Belanja</h2><button class="btn-outline-pill" onclick="closeModal('cartModal')">✕</button></div>
+        <div id="cartBody"></div>
+      </div>
+    </div>
+
+    <div id="checkoutModal" class="modal-bg" onclick="if(event.target===this)closeCheckoutModal()">
+      <div class="modal-box">
         <div id="stepConfirm">
-          <div class="panel-head">
-            <h2>Konfirmasi Pembelian</h2>
-            <button
-              class="btn btn-outline btn-sm"
-              onclick="closeCheckoutModal()"
-            >
-              ✕
-            </button>
+          <div class="modal-head"><h2>Checkout Instan</h2><button class="btn-outline-pill" onclick="closeCheckoutModal()">✕</button></div>
+          <div class="summary-box" style="margin-top:0">
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:4px">
+              <span id="chkProdCategory" class="pill-tag">Kategori</span>
+              <span id="chkProdStock" class="pill-tag green">Ready</span>
+            </div>
+            <div id="chkProdName" style="font-size:15px;font-weight:700;margin-top:4px">Produk</div>
+            <div id="chkProdDesc" style="font-size:12px;color:var(--muted)">Deskripsi</div>
           </div>
-
-          <div
-            style="
-              background: var(--bg);
-              border: 1px solid var(--border);
-              border-radius: 10px;
-              padding: 14px;
-              margin-bottom: 14px;
-            "
-          >
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 6px;
-              "
-            >
-              <div style="display: flex; align-items: center; gap: 6px">
-                <span id="chkProdCategory" class="pill pill-neutral"
-                  >Kategori</span
-                >
-                <code id="chkProdCode" class="card-code mono">KODE</code>
-              </div>
-              <span id="chkProdStock" class="pill pill-green">Ready</span>
-            </div>
-            <div
-              id="chkProdName"
-              style="font-size: 15px; font-weight: 600; margin-bottom: 2px"
-            >
-              Nama Produk
-            </div>
-            <div id="chkProdDesc" style="font-size: 12px; color: var(--muted)">
-              Deskripsi
-            </div>
+          <div id="chkTierBox" style="display:none;margin-bottom:10px">
+            <div style="font-size:11.5px;font-weight:700;color:var(--muted);margin-bottom:4px">Harga Grosir Bertingkat (Klik untuk pilih):</div>
+            <div id="chkTierList" class="tier-list"></div>
           </div>
-
-          <div
-            style="
-              display: flex;
-              align-items: center;
-              justify-content: space-between;
-              margin-bottom: 14px;
-            "
-          >
-            <label
-              style="font-size: 12px; color: var(--muted); font-weight: 500"
-              >Jumlah Pembelian</label
-            >
+          <div style="display:flex;align-items:center;justify-content:space-between;margin:12px 0">
+            <span style="font-size:13px;font-weight:600">Jumlah Pembelian</span>
             <div class="qty-control">
-              <button
-                type="button"
-                id="btnQtyMinus"
-                class="qty-btn"
-                onclick="changeCheckoutQty(-1)"
-              >
-                −
-              </button>
+              <button type="button" id="btnQtyMinus" class="qty-btn" onclick="changeCheckoutQty(-1)">−</button>
               <span id="chkQtyVal" class="qty-val mono">1</span>
-              <button
-                type="button"
-                id="btnQtyPlus"
-                class="qty-btn"
-                onclick="changeCheckoutQty(1)"
-              >
-                +
-              </button>
+              <button type="button" id="btnQtyPlus" class="qty-btn" onclick="changeCheckoutQty(1)">+</button>
             </div>
           </div>
-
           <div class="field">
             <label>Kode Voucher Promo (Opsional)</label>
-            <div style="display: flex; gap: 8px">
-              <input
-                type="text"
-                id="chkVoucherInput"
-                class="mono"
-                placeholder="Contoh: HEMAT5K"
-                onkeydown="if (event.key === 'Enter') applyCheckoutVoucher();"
-              />
-              <button
-                type="button"
-                class="btn btn-outline btn-sm"
-                onclick="applyCheckoutVoucher()"
-              >
-                Terapkan
-              </button>
+            <div style="display:flex;gap:8px">
+              <input id="chkVoucherInput" class="mono" placeholder="Contoh: HEMAT5K" onkeydown="if(event.key==='Enter')applyCheckoutVoucher()" />
+              <button type="button" class="btn-outline-pill" onclick="applyCheckoutVoucher()">Pakai</button>
             </div>
-            <div
-              id="chkVoucherStatus"
-              style="font-size: 11px; margin-top: 4px"
-            ></div>
+            <div id="chkVoucherStatus" style="font-size:11.5px;margin-top:4px"></div>
           </div>
-
           <div class="field">
-            <label>ID Telegram Anda (Untuk Notifikasi Bot &amp; Kunci Privasi Invoice)</label>
-            <input
-              type="text"
-              id="chkBuyerNote"
-              placeholder="Contoh: 8143402518 (Bisa dilihat di menu Profil Bot)"
-            />
+            <label>ID Telegram Anda (Opsional — untuk salinan pesanan &amp; verifikasi invoice)</label>
+            <input id="chkBuyerNote" placeholder="Contoh: 813402518" />
           </div>
-
           <div class="summary-box">
-            <div class="summary-row">
-              <span>Subtotal</span>
-              <span id="chkSubtotal" class="mono">Rp 0</span>
-            </div>
-            <div
-              id="chkDiscountRow"
-              class="summary-row"
-              style="display: none; color: var(--green)"
-            >
-              <span
-                >Diskon (<code id="chkDiscountCode" class="mono"></code>)</span
-              >
+            <div class="summary-row"><span>Harga Satuan</span><span id="chkUnitPrice" class="mono">Rp 0</span></div>
+            <div class="summary-row"><span>Subtotal</span><span id="chkSubtotal" class="mono">Rp 0</span></div>
+            <div id="chkDiscountRow" class="summary-row" style="display:none;color:var(--green)">
+              <span>Voucher (<code id="chkDiscountCode" class="mono"></code>)</span>
               <span id="chkDiscountVal" class="mono">-Rp 0</span>
             </div>
-            <div class="summary-row total">
-              <span>Estimasi Bayar</span>
-              <span id="chkTotalAkhir" class="mono">Rp 0</span>
-            </div>
+            <div class="summary-row total"><span>Total Bayar</span><span id="chkTotalAkhir" class="mono">Rp 0</span></div>
           </div>
-
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <button
-              type="button"
-              id="btnCreateQris"
-              class="btn"
-              style="width: 100%"
-              onclick="createQrisOrder()"
-            >
-              Bayar via QRIS Dinamis
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline"
-              style="width: 100%"
-              onclick="openProductInTelegram()"
-            >
-              Order via Bot Telegram (Saldo / QRIS)
-            </button>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button type="button" id="btnCreateQris" class="btn-black" style="width:100%" onclick="createQrisOrder()">Bayar via QRIS Dinamis</button>
+            <button type="button" class="btn-outline-pill" style="width:100%" onclick="openProductInTelegram()">Order via Bot Telegram (Saldo / QRIS)</button>
           </div>
         </div>
 
-        <!-- STEP 2: PEMBAYARAN QRIS DINAMIS -->
-        <div id="stepQris" style="display: none">
-          <div class="panel-head">
-            <h2>Tagihan QRIS Dinamis</h2>
-            <span id="qrisCountdown" class="pill pill-amber mono">15:00</span>
-          </div>
-
-          <div class="qris-frame">
-            <img
-              id="qrisImg"
-              src="assets/qris.jpg"
-              alt="QRIS Dinamis FaezStore"
-            />
-          </div>
-
+        <div id="stepQris" style="display:none">
+          <div class="modal-head"><h2>Scan QRIS Dinamis</h2><span id="qrisCountdown" class="pill-tag red mono">15:00</span></div>
+          <div class="qris-frame"><img id="qrisImg" src="assets/qris.jpg" alt="QRIS Dinamis" /></div>
           <div class="summary-box">
-            <div class="summary-row">
-              <span>Harga Pesanan</span>
-              <span id="qrisNominalAsli" class="mono">Rp 0</span>
-            </div>
-            <div class="summary-row">
-              <span>Kode Unik Verifikasi</span>
-              <span id="qrisKodeUnik" class="mono" style="color: var(--accent)"
-                >+Rp 0</span
-              >
-            </div>
+            <div class="summary-row"><span>Harga Pesanan</span><span id="qrisNominalAsli" class="mono">Rp 0</span></div>
+            <div class="summary-row"><span>Kode Unik</span><span id="qrisKodeUnik" class="mono">+Rp 0</span></div>
             <div class="summary-row total">
-              <span>Total Transfer Tepat</span>
-              <div style="display: flex; align-items: center; gap: 6px">
-                <span
-                  id="qrisTotalBayar"
-                  class="mono"
-                  style="color: var(--green)"
-                  >Rp 0</span
-                >
-                <button
-                  type="button"
-                  class="btn btn-outline btn-sm"
-                  onclick="copyTotalNominal()"
-                >
-                  Salin
-                </button>
-              </div>
+              <span>Transfer Tepat</span>
+              <span style="display:inline-flex;align-items:center;gap:6px">
+                <span id="qrisTotalBayar" class="mono" style="color:var(--green)">Rp 0</span>
+                <button type="button" class="btn-outline-pill" style="padding:4px 10px;font-size:11px" onclick="copyTotalNominal()">Salin</button>
+              </span>
             </div>
           </div>
-
-          <p
-            style="
-              font-size: 11px;
-              color: var(--muted);
-              text-align: center;
-              margin-bottom: 14px;
-            "
-          >
-            Scan kode QRIS di atas. Nominal sudah terisi otomatis beserta kode
-            unik. Pesanan dikirim instan begitu mutasi masuk.
-          </p>
-
-          <input type="hidden" id="qrisRawString" />
-
-          <div style="display: flex; flex-direction: column; gap: 8px">
-            <button
-              type="button"
-              class="btn"
-              style="width: 100%"
-              onclick="checkPaymentStatus(false)"
-            >
-              Cek Status Pembayaran
-            </button>
-            <button
-              type="button"
-              id="btnSimulatePay"
-              class="btn btn-success"
-              style="width: 100%; display: none"
-              onclick="simulateDemoPayment()"
-            >
-              Simulasikan Pembayaran Lunas (Demo)
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline"
-              style="width: 100%"
-              onclick="closeCheckoutModal()"
-            >
-              Tutup / Batalkan
-            </button>
+          <p style="font-size:11.5px;color:var(--muted);text-align:center;margin-bottom:12px">Nominal otomatis terisi saat scan. Pesanan dikirim instan begitu mutasi masuk.</p>
+          <div style="display:flex;flex-direction:column;gap:8px">
+            <button type="button" class="btn-black" style="width:100%" onclick="checkPaymentStatus(false)">Cek Status Pembayaran</button>
+            <button type="button" class="btn-outline-pill" style="width:100%" onclick="closeCheckoutModal()">Tutup</button>
           </div>
         </div>
 
-        <!-- STEP 3: PESANAN LUNAS & DATA AKUN -->
-        <div id="stepSuccess" style="display: none">
-          <div class="panel-head">
-            <div>
-              <span class="pill pill-green" style="margin-bottom: 4px"
-                >Pembayaran Berhasil</span
-              >
-              <h2>Akun Anda Siap Digunakan</h2>
-            </div>
-            <button
-              class="btn btn-outline btn-sm"
-              onclick="closeCheckoutModal()"
-            >
-              ✕
-            </button>
+        <div id="stepSuccess" style="display:none">
+          <div class="modal-head">
+            <div><span class="pill-tag green">Pembayaran Lunas</span><h2 style="margin-top:4px">Pesanan Siap Digunakan</h2></div>
+            <button class="btn-outline-pill" onclick="closeCheckoutModal()">✕</button>
           </div>
-
           <div class="summary-box">
-            <div class="summary-row">
-              <span>Nomor Invoice</span>
-              <code
-                id="succTrxId"
-                class="mono"
-                style="color: var(--accent); font-weight: 600"
-                >TRX-000</code
-              >
-            </div>
-            <div class="summary-row">
-              <span>Produk</span>
-              <span id="succProdName">Produk</span>
-            </div>
-            <div class="summary-row">
-              <span>Total Dibayar</span>
-              <span id="succTotalPaid" class="mono">Rp 0</span>
+            <div class="summary-row"><span>Invoice</span><code id="succTrxId" class="mono" style="font-weight:700">TRX</code></div>
+            <div class="summary-row"><span>Produk</span><span id="succProdName">-</span></div>
+            <div class="summary-row"><span>Total</span><span id="succTotalPaid" class="mono">-</span></div>
+          </div>
+          <div style="display:flex;justify-content:space-between;align-items:center;margin:8px 0 4px">
+            <span style="font-size:12px;font-weight:700">Data Akun / Voucher</span>
+            <div style="display:flex;gap:6px">
+              <button class="btn-outline-pill" style="padding:4px 10px;font-size:11px" onclick="copyDeliveredAccounts('succAccountsList')">Salin</button>
+              <button class="btn-outline-pill" style="padding:4px 10px;font-size:11px" onclick="downloadInvoiceTxt()">Unduh .TXT</button>
             </div>
           </div>
-
-          <div style="margin: 12px 0">
-            <div
-              style="
-                display: flex;
-                align-items: center;
-                justify-content: space-between;
-                margin-bottom: 6px;
-              "
-            >
-              <span
-                style="font-size: 12px; font-weight: 600; color: var(--muted)"
-                >Data Akun / Voucher</span
-              >
-              <div style="display: flex; gap: 6px">
-                <button
-                  type="button"
-                  class="btn btn-outline btn-sm"
-                  onclick="copyDeliveredAccounts('succAccountsList')"
-                >
-                  Salin Akun
-                </button>
-                <button
-                  type="button"
-                  class="btn btn-outline btn-sm"
-                  onclick="downloadInvoiceTxt()"
-                >
-                  Unduh .TXT
-                </button>
-              </div>
-            </div>
-            <pre id="succAccountsList" class="account-box mono"></pre>
-          </div>
-
-          <div
-            style="
-              display: flex;
-              flex-direction: column;
-              gap: 8px;
-              margin-top: 14px;
-            "
-          >
-            <button
-              type="button"
-              class="btn"
-              style="width: 100%"
-              onclick="jumpToInvoiceWarranty()"
-            >
-              Beri Rating &amp; Aktifkan Garansi Resmi
-            </button>
-            <button
-              type="button"
-              class="btn btn-outline"
-              style="width: 100%"
-              onclick="closeCheckoutModal()"
-            >
-              Selesai
-            </button>
+          <pre id="succAccountsList" class="account-box mono"></pre>
+          <div style="display:flex;flex-direction:column;gap:8px;margin-top:12px">
+            <button class="btn-black" style="width:100%" onclick="jumpToInvoiceWarranty()">Beri Rating &amp; Aktifkan Garansi Resmi</button>
+            <button class="btn-outline-pill" style="width:100%" onclick="closeCheckoutModal()">Selesai</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div id="toast"></div>
+    <div id="invoiceModal" class="modal-bg" onclick="if(event.target===this)closeModal('invoiceModal')">
+      <div class="modal-box wide">
+        <div class="modal-head"><h2>Pesanan Saya &amp; Klaim Garansi</h2><button class="btn-outline-pill" onclick="closeModal('invoiceModal')">✕</button></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:10px">
+          <div class="field" style="margin:0"><label>Nomor Invoice</label><input id="invoiceSearchInput" class="mono" placeholder="TRX-..." onkeydown="if(event.key==='Enter')lookupInvoiceById()" /></div>
+          <div class="field" style="margin:0"><label>Verifikasi ID / Username Telegram</label><input id="invoiceVerifierInput" placeholder="Wajib jika dari perangkat lain" onkeydown="if(event.key==='Enter')lookupInvoiceById()" /></div>
+        </div>
+        <button class="btn-black" style="width:100%;margin-bottom:14px" onclick="lookupInvoiceById()">Periksa Pesanan</button>
+        <div id="recentInvoicesWrap" style="margin-bottom:14px"></div>
+        <div id="invoiceDetailPanel"></div>
+      </div>
+    </div>
 
+    <div id="voucherModal" class="modal-bg" onclick="if(event.target===this)closeModal('voucherModal')">
+      <div class="modal-box">
+        <div class="modal-head"><h2>Voucher Promo Aktif</h2><button class="btn-outline-pill" onclick="closeModal('voucherModal')">✕</button></div>
+        <div id="voucherListBody"></div>
+      </div>
+    </div>
+
+    <div id="alertModal" class="modal-bg" onclick="if(event.target===this)closeModal('alertModal')">
+      <div class="modal-box">
+        <div class="modal-head"><h2>Kabari Saat Stok Tersedia</h2><button class="btn-outline-pill" onclick="closeModal('alertModal')">✕</button></div>
+        <p id="alertProdTitle" style="font-size:13px;color:var(--muted);margin-bottom:12px"></p>
+        <input type="hidden" id="alertProdKode" />
+        <div class="field"><label>ID Telegram (agar langsung di-DM Bot saat restock) atau Kontak</label><input id="alertContactInput" placeholder="Contoh: 813402518 atau @username" /></div>
+        <button class="btn-black" style="width:100%" onclick="submitStockAlert()">Aktifkan Notifikasi Restock</button>
+      </div>
+    </div>
+
+    <div id="toast"></div>
     <script src="js/qris.js"></script>
     <script src="js/app.js"></script>
   </body>

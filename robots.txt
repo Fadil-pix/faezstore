@@ -1,0 +1,3 @@
+User-agent: *
+Allow: /
+Sitemap: https://faezstore.cloud/sitemap.xml
