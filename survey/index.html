@@ -3,527 +3,136 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Survei Kebutuhan Digital — FaezStore</title>
+    <title>Survey Kebutuhan Digital — FaezStore</title>
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/lucide@latest"></script>
   </head>
   <body>
-    <main class="container">
-      <header class="top-bar">
-        <div class="brand">
-          <span class="brand-dot"></span>
+    <div class="page-shell">
+      <!-- Top Navbar -->
+      <header class="navbar">
+        <a href="https://faezstore.cloud" class="brand">
+          <span class="brand-mark"><i data-lucide="sparkles"></i></span>
           <span>FaezStore</span>
-          <span class="brand-tag">Riset</span>
+        </a>
+        <nav class="nav-links">
+          <a href="https://faezstore.cloud">Storefront</a>
+          <a href="#" class="active">Survey</a>
+        </nav>
+        <div class="nav-right">
+          <span class="pill-step-top" id="topProgressBadge">Bagian 1 / 1</span>
         </div>
-        <button
-          type="button"
-          id="themeToggle"
-          class="icon-btn"
-          aria-label="Ganti Tema"
-        >
-          <i data-lucide="moon" id="themeIcon"></i>
-        </button>
       </header>
 
-      <div class="card">
-        <div class="progress-track">
-          <div class="progress-fill" id="progressFill"></div>
-        </div>
-
-        <div class="step-meta" id="stepMeta">
-          <span id="stepIndicator">Langkah 1 dari 4</span>
-          <span id="stepPercent">25%</span>
-        </div>
-
-        <form id="surveyForm" novalidate>
-          <!-- LANGKAH 1: Profil & Kebiasaan -->
-          <section class="step active" data-step="1">
-            <h2>Profil & Kebiasaan</h2>
-            <p class="subtitle">
-              Bantu kami memahami kebiasaan belanja produk digitalmu.
-            </p>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Aktivitas utama saat ini? <span class="req">*</span></label
-              >
-              <div class="option-grid">
-                <label class="option-pill">
-                  <input
-                    type="radio"
-                    name="role"
-                    value="Pelajar/Mahasiswa"
-                    required
-                  />
-                  <span>Pelajar / Mahasiswa</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="role" value="Pekerja" />
-                  <span>Pekerja / Karyawan</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="role" value="Freelancer" />
-                  <span>Freelancer / Kreator</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="role" value="Lainnya" />
-                  <span>Lainnya</span>
-                </label>
-              </div>
+      <!-- Hero Banner (Stuffsus Giant Typography Style) -->
+      <section class="hero-banner">
+        <h1 class="hero-giant-title">Survey</h1>
+        <div class="hero-floating-bar">
+          <span class="hero-tagline">Give All You Need</span>
+          <div class="hero-progress-wrap">
+            <div class="hero-progress-track">
+              <div class="hero-progress-fill" id="progressFill"></div>
             </div>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Platform favorit untuk beli produk digital?
-                <span class="req">*</span></label
-              >
-              <div class="option-grid">
-                <label class="option-pill">
-                  <input
-                    type="radio"
-                    name="platform"
-                    value="Telegram Bot"
-                    required
-                  />
-                  <span>Telegram Bot</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="platform" value="Website" />
-                  <span>Website Store</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="platform" value="WhatsApp" />
-                  <span>WhatsApp</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="platform" value="Marketplace" />
-                  <span>Shopee / Tokopedia</span>
-                </label>
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Frekuensi transaksi dalam 1 bulan?
-                <span class="req">*</span></label
-              >
-              <div class="option-grid">
-                <label class="option-pill">
-                  <input
-                    type="radio"
-                    name="frequency"
-                    value="1-2 kali"
-                    required
-                  />
-                  <span>1–2 kali</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="frequency" value="3-5 kali" />
-                  <span>3–5 kali</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="frequency" value="> 5 kali" />
-                  <span>Lebih dari 5 kali</span>
-                </label>
-                <label class="option-pill">
-                  <input type="radio" name="frequency" value="Mendadak" />
-                  <span>Saat butuh saja</span>
-                </label>
-              </div>
-            </div>
-          </section>
-
-          <!-- LANGKAH 2: Aplikasi Premium -->
-          <section class="step" data-step="2">
-            <h2>Aplikasi Premium</h2>
-            <p class="subtitle">
-              Pilih layanan dan tipe akun yang paling sering kamu cari.
-            </p>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Aplikasi yang paling sering digunakan?
-                <span class="req">*</span>
-                <small>(Bisa pilih banyak)</small></label
-              >
-              <div class="option-grid cols-3">
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="Netflix"
-                  /><span>Netflix</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="YouTube Premium"
-                  /><span>YouTube Prem</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="Spotify"
-                  /><span>Spotify</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="Canva Pro"
-                  /><span>Canva Pro</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="CapCut Pro"
-                  /><span>CapCut Pro</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="Disney+ / Viu"
-                  /><span>Disney+ / Viu</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="ChatGPT Plus"
-                  /><span>ChatGPT Plus</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="Alight Motion"
-                  /><span>Alight Motion</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="favoriteApps"
-                    value="VPN Premium"
-                  /><span>VPN Premium</span></label
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Tipe akun yang paling disukai?
-                <span class="req">*</span></label
-              >
-              <div class="option-stack">
-                <label class="option-pill">
-                  <input
-                    type="radio"
-                    name="accountType"
-                    value="Private Account"
-                    required
-                  />
-                  <span
-                    ><strong>Private Account</strong> — Akun pribadi, bebas atur
-                    profil & password</span
-                  >
-                </label>
-                <label class="option-pill">
-                  <input
-                    type="radio"
-                    name="accountType"
-                    value="Sharing Account"
-                  />
-                  <span
-                    ><strong>Sharing Account</strong> — Harga jauh lebih hemat,
-                    fitur tetap full</span
-                  >
-                </label>
-                <label class="option-pill">
-                  <input
-                    type="radio"
-                    name="accountType"
-                    value="Invite / Family"
-                  />
-                  <span
-                    ><strong>Invite / Family Plan</strong> — Pakai email pribadi
-                    sendiri</span
-                  >
-                </label>
-              </div>
-            </div>
-          </section>
-
-          <!-- LANGKAH 3: Keperluan Digital Lainnya -->
-          <section class="step" data-step="3">
-            <h2>Produk Digital Lainnya</h2>
-            <p class="subtitle">
-              Bantu kami menentukan stok produk tambahan di luar aplikasi
-              premium.
-            </p>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Kebutuhan digital lain yang sering dicari?
-                <small>(Opsional)</small></label
-              >
-              <div class="option-grid">
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="otherNeeds"
-                    value="Top-up Game"
-                  /><span>Top-up Game</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="otherNeeds"
-                    value="Pulsa & Data"
-                  /><span>Pulsa & Kuota</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="otherNeeds"
-                    value="Suntik Sosmed"
-                  /><span>Suntik Sosmed</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="otherNeeds"
-                    value="Nokos OTP"
-                  /><span>Nomor Virtual (OTP)</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="otherNeeds"
-                    value="Lisensi Software"
-                  /><span>Lisensi Windows/Office</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="otherNeeds"
-                    value="Template / E-book"
-                  /><span>Preset & Template</span></label
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="q-label" for="missingStock"
-                >Produk apa yang sering kehabisan stok atau susah dicari?</label
-              >
-              <input
-                type="text"
-                id="missingStock"
-                name="missingStock"
-                class="text-input"
-                placeholder="Contoh: CapCut Private 1 bulan, Nokos Indo, dll."
-              />
-            </div>
-          </section>
-
-          <!-- LANGKAH 4: Budget, Prioritas & Kontak -->
-          <section class="step" data-step="4">
-            <h2>Budget & Prioritas</h2>
-            <p class="subtitle">
-              Langkah terakhir sebelum klaim voucher diskonmu.
-            </p>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Rata-rata budget per transaksi?
-                <span class="req">*</span></label
-              >
-              <div class="option-grid">
-                <label class="option-pill"
-                  ><input
-                    type="radio"
-                    name="budget"
-                    value="< Rp15.000"
-                    required
-                  /><span>Di bawah Rp15.000</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="radio"
-                    name="budget"
-                    value="Rp15.000 - Rp35.000"
-                  /><span>Rp15.000 – Rp35.000</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="radio"
-                    name="budget"
-                    value="Rp35.000 - Rp75.000"
-                  /><span>Rp35.000 – Rp75.000</span></label
-                >
-                <label class="option-pill"
-                  ><input type="radio" name="budget" value="> Rp75.000" /><span
-                    >Di atas Rp75.000</span
-                  ></label
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="q-label"
-                >Metode pembayaran ternyaman? <span class="req">*</span></label
-              >
-              <div class="option-grid">
-                <label class="option-pill"
-                  ><input
-                    type="radio"
-                    name="payment"
-                    value="QRIS All Payment"
-                    required
-                  /><span>QRIS (All Payment)</span></label
-                >
-                <label class="option-pill"
-                  ><input type="radio" name="payment" value="E-Wallet" /><span
-                    >DANA / GoPay / OVO</span
-                  ></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="radio"
-                    name="payment"
-                    value="Transfer Bank"
-                  /><span>Transfer Bank</span></label
-                >
-                <label class="option-pill"
-                  ><input type="radio" name="payment" value="Saldo Bot" /><span
-                    >Deposit Saldo Bot</span
-                  ></label
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <div class="label-row">
-                <label class="q-label"
-                  >Faktor terpenting memilih toko?
-                  <span class="req">*</span></label
-                >
-                <span class="counter-badge" id="factorCounter"
-                  >0 / 2 dipilih</span
-                >
-              </div>
-              <div class="option-grid">
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="factors"
-                    value="Proses Instan"
-                  /><span>Proses Otomatis & Instan</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="factors"
-                    value="Harga Murah"
-                  /><span>Harga Murah / Flash Sale</span></label
-                >
-                <label class="option-pill"
-                  ><input
-                    type="checkbox"
-                    name="factors"
-                    value="Garansi Cepat"
-                  /><span>Garansi Full & Cepat</span></label
-                >
-                <label class="option-pill"
-                  ><input type="checkbox" name="factors" value="UI Rapi" /><span
-                    >Katalog Web/Bot Rapi</span
-                  ></label
-                >
-              </div>
-            </div>
-
-            <div class="form-group">
-              <label class="q-label" for="feedback"
-                >Saran fitur atau produk baru <small>(Opsional)</small></label
-              >
-              <textarea
-                id="feedback"
-                name="feedback"
-                rows="2"
-                class="text-input"
-                placeholder="Tulis masukan singkatmu di sini..."
-              ></textarea>
-            </div>
-
-            <div class="form-group">
-              <label class="q-label" for="contact"
-                >Username Telegram / No. WA
-                <small>(Opsional, untuk undian akun gratis)</small></label
-              >
-              <input
-                type="text"
-                id="contact"
-                name="contact"
-                class="text-input"
-                placeholder="@username atau 08xxxxxxxxxx"
-              />
-            </div>
-          </section>
-
-          <!-- Pesan Error Inline -->
-          <p class="error-banner" id="errorMsg" hidden></p>
-
-          <!-- Navigasi -->
-          <div class="nav-actions" id="navActions">
-            <button type="button" id="prevBtn" class="btn-ghost" hidden>
-              <i data-lucide="arrow-left"></i> Kembali
-            </button>
-            <button type="button" id="nextBtn" class="btn-primary">
-              Lanjut <i data-lucide="arrow-right"></i>
-            </button>
-            <button type="submit" id="submitBtn" class="btn-primary" hidden>
-              Kirim & Klaim Voucher
-            </button>
+            <span class="hero-pill-black" id="progressPercentPill">0%</span>
           </div>
-        </form>
+        </div>
+      </section>
 
-        <!-- LAYAR KLAIM VOUCHER (Tampil setelah submit / jika sudah pernah isi) -->
-        <section class="voucher-screen" id="voucherScreen" hidden>
-          <div class="success-icon">
-            <i data-lucide="check-circle-2"></i>
+      <!-- Main Split Content -->
+      <main class="main-layout" id="surveyMain">
+        <aside class="sidebar">
+          <h3 class="sidebar-title">Category</h3>
+          <div class="category-list" id="stepSidebarList"></div>
+        </aside>
+
+        <section class="content-area">
+          <div class="section-header">
+            <span class="badge-tag" id="currentGroupBadge">Bagian 1</span>
+            <h2 id="currentGroupTitle">Memuat pertanyaan...</h2>
           </div>
-          <h2>Terima Kasih!</h2>
-          <p class="subtitle">
-            Jawabanmu sudah tersimpan. Gunakan kode di bawah ini saat checkout
-            di FaezStore untuk mendapatkan potongan harga spesial.
-          </p>
 
-          <div class="voucher-box">
-            <span class="voucher-label">KODE VOUCHER DISKON 15%</span>
-            <div class="voucher-code-row">
-              <code id="voucherCodeText">SURVEY15</code>
-              <button type="button" id="copyVoucherBtn" class="btn-copy">
-                <i data-lucide="copy"></i> Salin
+          <form id="dynamicSurveyForm" novalidate>
+            <div id="questionsContainer" class="questions-grid"></div>
+
+            <p class="error-banner" id="errorMsg" hidden></p>
+
+            <!-- Pagination & Final Submit (Tombol Kirim HANYA muncul di langkah terakhir) -->
+            <div class="form-footer-actions">
+              <button
+                type="button"
+                id="prevBtn"
+                class="btn-pill-outline"
+                hidden
+              >
+                <i data-lucide="arrow-left"></i> Previous
+              </button>
+              <button type="button" id="nextBtn" class="btn-pill-dark" hidden>
+                Next <i data-lucide="arrow-right"></i>
+              </button>
+              <button
+                type="submit"
+                id="submitBtn"
+                class="btn-pill-dark btn-submit-final"
+                hidden
+              >
+                Kirim Survei & Klaim Voucher <i data-lucide="check"></i>
               </button>
             </div>
-          </div>
-
-          <a href="https://faezstore.cloud" class="btn-primary full-link">
-            Belanja Sekarang di FaezStore <i data-lucide="external-link"></i>
-          </a>
+          </form>
         </section>
-      </div>
-    </main>
+      </main>
+
+      <!-- Layar Selesai & Klaim Voucher -->
+      <section class="voucher-result-card" id="voucherScreen" hidden>
+        <div class="voucher-icon"><i data-lucide="badge-check"></i></div>
+        <h2>Terima Kasih Atas Partisipasimu!</h2>
+        <p>
+          Jawabanmu telah tersimpan. Salin kode voucher di bawah ini dan gunakan
+          saat checkout di FaezStore.
+        </p>
+        <div class="voucher-ticket">
+          <span>VOUCHER DISKON 15%</span>
+          <div class="voucher-code-box">
+            <code id="voucherCodeText">SURVEY15</code>
+            <button type="button" id="copyVoucherBtn" class="btn-pill-dark">
+              Salin Kode
+            </button>
+          </div>
+        </div>
+        <a href="https://faezstore.cloud" class="btn-pill-outline"
+          >Kembali ke Katalog Toko</a
+        >
+      </section>
+
+      <!-- Dark CTA Banner (Stuffsus Bottom Card) -->
+      <section class="dark-cta-banner">
+        <div class="cta-left">
+          <h2>Ready to Get<br />Premium Stuff?</h2>
+          <a href="https://faezstore.cloud" class="cta-white-pill">
+            <span>Jelajahi Katalog FaezStore</span>
+            <span class="cta-mini-btn">Shop</span>
+          </a>
+        </div>
+        <div class="cta-right">
+          <strong>FaezStore Digital Hub</strong>
+          <p>
+            Masukanmu membantu kami menyediakan stok aplikasi premium, top-up,
+            dan layanan digital instan dengan harga terbaik.
+          </p>
+        </div>
+      </section>
+
+      <footer class="site-footer">
+        <span>Copyright © 2026 FaezStore. All Rights Reserved.</span>
+        <span>faezstore.cloud</span>
+      </footer>
+    </div>
 
     <script src="app.js"></script>
   </body>
