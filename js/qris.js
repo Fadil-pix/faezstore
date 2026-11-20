@@ -11,6 +11,11 @@ const FAEZ_CONFIG = {
   storeName: "FaezStore",
   botUsername: "faezstoresbot",
   expireMinutes: 15,
+  // PIN untuk membuka "Mode Kelola Foto" (hanya pengunci tampilan, BUKAN keamanan server).
+  // Ganti dengan PIN milik Anda sebelum di-push.
+  adminPin: "faez123",
+  // File foto produk yang dipublikasikan (hasil Ekspor dari Mode Kelola Foto).
+  imagesFile: "data/product-images.json",
   apiBase: IS_LOCAL_HOST ? "" : "https://api.zientax.my.id",
   qrisStatic:
     "00020101021126610014COM.GO-JEK.WWW01189360091436122211990210G6122211990303UMI51440014ID.CO.QRIS.WWW0215ID10253671311960303UMI5204899953033605802ID5915Faezig, Digital6006KLATEN61055746662070703A0163041830",

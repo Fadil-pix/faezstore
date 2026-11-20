@@ -57,6 +57,13 @@ body {
   text-decoration: none;
 }
 
+.brand-logo {
+  width: 30px;
+  height: 30px;
+  border-radius: 8px;
+  flex: none;
+}
+
 .brand-mark {
   width: 28px;
   height: 28px;
@@ -546,4 +553,46 @@ body {
 
 [hidden] {
   display: none !important;
+}
+
+/* ===== Perbaikan tampilan HP ===== */
+html {
+  -webkit-text-size-adjust: 100%;
+  text-size-adjust: 100%;
+}
+body {
+  overflow-x: hidden;
+  padding-bottom: calc(20px + env(safe-area-inset-bottom, 0px));
+}
+.page-shell { overflow-x: clip; }
+input[type="text"],
+textarea,
+.input-clean {
+  font-size: 16px; /* cegah auto-zoom di iOS */
+}
+.q-title,
+.opt-pill span,
+.error-banner,
+.hero-giant-title {
+  overflow-wrap: anywhere;
+}
+@media (max-width: 780px) {
+  body { padding: 10px 8px calc(20px + env(safe-area-inset-bottom, 0px)); }
+  .page-shell { border-radius: 18px; }
+  .navbar { padding-top: 14px; padding-bottom: 14px; gap: 10px; }
+  .nav-links { display: none; }
+  .hero-banner { padding-top: 28px; }
+  .hero-giant-title {
+    font-size: clamp(56px, 20vw, 120px);
+    line-height: 1.05;
+    margin-bottom: 8px; /* judul tidak lagi tertutup kartu di HP */
+  }
+  .hero-floating-bar { padding: 16px 18px; }
+  .hero-progress-wrap { width: 100%; }
+  .hero-progress-track { flex: 1; }
+  .form-footer-actions { flex-wrap: wrap; gap: 10px; }
+  .form-footer-actions > button { flex: 1 1 auto; min-height: 46px; justify-content: center; }
+  .btn-submit-final { width: 100%; }
+  .voucher-code-box { flex-wrap: wrap; justify-content: center; }
+  .site-footer { flex-direction: column; gap: 6px; text-align: center; }
 }

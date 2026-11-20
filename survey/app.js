@@ -1,5 +1,21 @@
 const API_BASE = "https://api.zientax.my.id/api/survey";
 
+// Aman dari karakter khusus (", <, &) pada teks pertanyaan/opsi
+const esc = (s) =>
+  String(s ?? "")
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+
+// Survey tetap jalan walau library ikon gagal dimuat
+function refreshIcons() {
+  if (window.lucide && typeof window.lucide.createIcons === "function") {
+    window.lucide.createIcons();
+  }
+}
+
 let GROUPS = []; // [{ name: 'Profil', questions: [...] }, ...]
 let CURRENT_STEP = 0;
 let ANSWERS = {}; // { [questionId]: valueOrArray }
@@ -21,7 +37,7 @@ const voucherScreen = document.getElementById("voucherScreen");
 const voucherCodeText = document.getElementById("voucherCodeText");
 const copyVoucherBtn = document.getElementById("copyVoucherBtn");
 
-lucide.createIcons();
+refreshIcons();
 
 // Cek jika sudah pernah mengisi survei
 const savedVoucher = localStorage.getItem("faez_survey_voucher_v2");
@@ -107,8 +123,8 @@ function renderCurrentStep() {
             .map(
               (opt) => `
         <label class="opt-pill">
-          <input type="radio" name="q_${q.id}" value="${opt}" ${savedVal === opt ? "checked" : ""} onchange="handleRadioChange(${q.id}, this.value)" />
-          <span>${opt}</span>
+          <input type="radio" name="q_${q.id}" value="${esc(opt)}" ${savedVal === opt ? "checked" : ""} onchange="handleRadioChange(${q.id}, this.value)" />
+          <span>${esc(opt)}</span>
         </label>
       `,
             )
@@ -125,23 +141,23 @@ function renderCurrentStep() {
               const isDisabled = !isChecked && reachedMax;
               return `
           <label class="opt-pill">
-            <input type="checkbox" name="q_${q.id}" value="${opt}" ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""} onchange="handleCheckboxChange(${q.id}, ${q.max_select || 0})" />
-            <span>${opt}</span>
+            <input type="checkbox" name="q_${q.id}" value="${esc(opt)}" ${isChecked ? "checked" : ""} ${isDisabled ? "disabled" : ""} onchange="handleCheckboxChange(${q.id}, ${q.max_select || 0})" />
+            <span>${esc(opt)}</span>
           </label>
         `;
             })
             .join("") +
           `</div>`;
       } else if (q.question_type === "textarea") {
-        inputHtml = `<textarea class="input-clean" rows="3" placeholder="Tulis jawabanmu di sini..." oninput="ANSWERS[${q.id}] = this.value">${savedVal || ""}</textarea>`;
+        inputHtml = `<textarea class="input-clean" rows="3" placeholder="Tulis jawabanmu di sini..." oninput="ANSWERS[${q.id}] = this.value">${esc(savedVal || "")}</textarea>`;
       } else {
-        inputHtml = `<input type="text" class="input-clean" placeholder="Tulis jawabanmu di sini..." value="${savedVal || ""}" oninput="ANSWERS[${q.id}] = this.value" />`;
+        inputHtml = `<input type="text" class="input-clean" placeholder="Tulis jawabanmu di sini..." value="${esc(savedVal || "")}" oninput="ANSWERS[${q.id}] = this.value" />`;
       }
 
       return `
       <div class="q-card">
         <div class="q-card-head">
-          <div class="q-title">${q.question_text} ${reqMark}</div>
+          <div class="q-title">${esc(q.question_text)} ${reqMark}</div>
           ${limitBadge}
         </div>
         ${inputHtml}
@@ -156,7 +172,7 @@ function renderCurrentStep() {
   nextBtn.hidden = isLastStep;
   submitBtn.hidden = !isLastStep;
 
-  lucide.createIcons();
+  refreshIcons();
 }
 
 window.handleRadioChange = (qId, val) => {
@@ -260,12 +276,23 @@ function showVoucherScreen(code) {
   progressPercentPill.textContent = "100%";
   voucherCodeText.textContent = code;
   voucherScreen.hidden = false;
-  lucide.createIcons();
+  refreshIcons();
 }
 
 copyVoucherBtn.addEventListener("click", async () => {
   const code = voucherCodeText.textContent;
-  await navigator.clipboard.writeText(code);
+  try {
+    await navigator.clipboard.writeText(code);
+  } catch (_) {
+    const ta = document.createElement("textarea");
+    ta.value = code;
+    ta.style.cssText = "position:fixed;top:0;left:0;opacity:0;font-size:16px";
+    document.body.appendChild(ta);
+    ta.focus();
+    ta.select();
+    try { document.execCommand("copy"); } catch (_) {}
+    ta.remove();
+  }
   copyVoucherBtn.textContent = "Tersalin!";
   setTimeout(() => {
     copyVoucherBtn.textContent = "Salin Kode";
