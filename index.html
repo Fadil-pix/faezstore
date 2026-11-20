@@ -14,11 +14,44 @@
     />
     <link rel="canonical" href="https://faezstore.cloud/" />
     <link rel="icon" href="favicon.ico" sizes="any" />
-    <link rel="icon" type="image/png" sizes="32x32" href="assets/favicon-32.png" />
-    <link rel="icon" type="image/png" sizes="64x64" href="assets/favicon-64.png" />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="32x32"
+      href="assets/favicon-32.png"
+    />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="64x64"
+      href="assets/favicon-64.png"
+    />
     <link rel="apple-touch-icon" href="assets/apple-touch-icon.png" />
-    <meta property="og:title" content="FaezStore — Produk Digital Otomatis 24 Jam" />
-    <meta property="og:image" content="https://faezstore.cloud/assets/icon-512.png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FaezStore" />
+    <meta property="og:url" content="https://faezstore.cloud/" />
+    <meta
+      property="og:title"
+      content="FaezStore — Produk Digital Otomatis 24 Jam"
+    />
+    <meta
+      property="og:description"
+      content="FaezStore menyediakan produk digital otomatis 24 jam dengan pembayaran QRIS dinamis, harga grosir bertingkat, flash sale, ulasan terverifikasi, dan garansi resmi."
+    />
+    <meta property="og:image" content="https://faezstore.cloud/banner.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta
+      name="twitter:title"
+      content="FaezStore — Produk Digital Otomatis 24 Jam"
+    />
+    <meta
+      name="twitter:description"
+      content="FaezStore menyediakan produk digital otomatis 24 jam dengan pembayaran QRIS dinamis, harga grosir bertingkat, flash sale, ulasan terverifikasi, dan garansi resmi."
+    />
+    <meta name="twitter:image" content="https://faezstore.cloud/banner.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -31,17 +64,39 @@
     <div class="app" id="top">
       <!-- ===== Bar atas ===== -->
       <header class="topbar">
-        <a class="brand" href="#top" data-act="home" aria-label="FaezStore beranda">
-          <img class="brand-logo" src="assets/logo-128.png" alt="" width="34" height="34" />
+        <a
+          class="brand"
+          href="#top"
+          data-act="home"
+          aria-label="FaezStore beranda"
+        >
+          <img
+            class="brand-logo"
+            src="assets/logo-128.png"
+            alt=""
+            width="34"
+            height="34"
+          />
           <span id="storeTitle">FaezStore</span>
           <span id="connDot" class="live-dot" title="Status koneksi"></span>
         </a>
 
         <nav class="top-nav" aria-label="Menu utama">
-          <button type="button" data-nav="shop" class="active" onclick="goShop()">Toko</button>
-          <button type="button" onclick="setFilterMode('DISCOUNT')">Flash Sale</button>
+          <button
+            type="button"
+            data-nav="shop"
+            class="active"
+            onclick="goShop()"
+          >
+            Toko
+          </button>
+          <button type="button" onclick="setFilterMode('DISCOUNT')">
+            Flash Sale
+          </button>
           <button type="button" onclick="openVoucherModal()">Voucher</button>
-          <button type="button" onclick="openInvoiceModal()">Pesanan Saya</button>
+          <button type="button" onclick="openInvoiceModal()">
+            Pesanan Saya
+          </button>
         </nav>
 
         <div class="top-actions">
@@ -69,12 +124,24 @@
 
       <!-- ===== Bar Kelola Foto (hanya tampil untuk pemilik) ===== -->
       <div class="admin-bar" id="adminBar" hidden>
-        <span class="admin-bar-title"><span data-ic="camera" data-size="16"></span> Kelola Foto</span>
+        <span class="admin-bar-title"
+          ><span data-ic="camera" data-size="16"></span> Kelola Foto</span
+        >
         <div class="admin-bar-actions">
-          <button type="button" class="btn-outline btn-sm" onclick="openExportModal()">
+          <button
+            type="button"
+            class="btn-outline btn-sm"
+            onclick="openExportModal()"
+          >
             <span data-ic="download" data-size="15"></span> Publikasi
           </button>
-          <button type="button" class="btn-outline btn-sm" onclick="exitAdminMode()">Keluar</button>
+          <button
+            type="button"
+            class="btn-outline btn-sm"
+            onclick="exitAdminMode()"
+          >
+            Keluar
+          </button>
         </div>
       </div>
 
@@ -83,7 +150,10 @@
         <section class="hero" id="heroBanner">
           <div class="hero-inner">
             <h1>Akun &amp; layanan digital, dikirim otomatis</h1>
-            <p>Bayar pakai QRIS, akun langsung masuk. Garansi resmi &amp; buka 24 jam.</p>
+            <p>
+              Bayar pakai QRIS, akun langsung masuk. Garansi resmi &amp; buka 24
+              jam.
+            </p>
             <ol class="hero-steps">
               <li><b>1</b><span>Pilih produk</span></li>
               <li><b>2</b><span>Bayar QRIS</span></li>
@@ -114,11 +184,23 @@
               aria-label="Cari produk"
               oninput="handleSearch(this.value)"
             />
-            <button type="button" id="searchClear" class="search-clear" hidden onclick="clearSearch()" aria-label="Hapus pencarian">
+            <button
+              type="button"
+              id="searchClear"
+              class="search-clear"
+              hidden
+              onclick="clearSearch()"
+              aria-label="Hapus pencarian"
+            >
               <span data-ic="x" data-size="16"></span>
             </button>
           </div>
-          <div class="chips" id="chipRow" role="tablist" aria-label="Filter produk"></div>
+          <div
+            class="chips"
+            id="chipRow"
+            role="tablist"
+            aria-label="Filter produk"
+          ></div>
           <div class="result-info" id="resultInfo"></div>
         </section>
 
@@ -132,7 +214,10 @@
         <section class="track-card">
           <div>
             <h2>Sudah beli? Cek pesanan &amp; garansi</h2>
-            <p>Masukkan nomor invoice (TRX-...) untuk melihat akun, klaim garansi, atau memberi rating.</p>
+            <p>
+              Masukkan nomor invoice (TRX-...) untuk melihat akun, klaim
+              garansi, atau memberi rating.
+            </p>
           </div>
           <div class="track-form">
             <input
@@ -144,7 +229,9 @@
               aria-label="Nomor invoice"
               onkeydown="if (event.key === 'Enter') quickTrackInvoice();"
             />
-            <button type="button" class="btn" onclick="quickTrackInvoice()">Cek</button>
+            <button type="button" class="btn" onclick="quickTrackInvoice()">
+              Cek
+            </button>
           </div>
         </section>
       </main>
@@ -159,12 +246,26 @@
           </div>
         </div>
         <div class="footer-links">
-          <button type="button" onclick="openVoucherModal()">Voucher Promo</button>
-          <button type="button" onclick="openInvoiceModal()">Klaim Garansi</button>
-          <a id="botFooterLink" href="https://t.me/faezstoresbot" target="_blank" rel="noopener">Bot Telegram</a>
-          <button type="button" class="admin-link" onclick="openAdminLogin()">Kelola Foto</button>
+          <button type="button" onclick="openVoucherModal()">
+            Voucher Promo
+          </button>
+          <button type="button" onclick="openInvoiceModal()">
+            Klaim Garansi
+          </button>
+          <a
+            id="botFooterLink"
+            href="https://t.me/faezstoresbot"
+            target="_blank"
+            rel="noopener"
+            >Bot Telegram</a
+          >
+          <button type="button" class="admin-link" onclick="openAdminLogin()">
+            Kelola Foto
+          </button>
         </div>
-        <div class="footer-copy">Copyright © 2026 FaezStore. All Rights Reserved.</div>
+        <div class="footer-copy">
+          Copyright © 2026 FaezStore. All Rights Reserved.
+        </div>
       </footer>
     </div>
 
@@ -180,33 +281,77 @@
         <span data-ic="receipt"></span><span>Pesanan</span>
       </button>
       <button type="button" onclick="openCartModal()">
-        <span class="bn-icon"><span data-ic="cart"></span><span class="cart-badge" hidden>0</span></span><span>Keranjang</span>
+        <span class="bn-icon"
+          ><span data-ic="cart"></span
+          ><span class="cart-badge" hidden>0</span></span
+        ><span>Keranjang</span>
       </button>
     </nav>
 
     <!-- ===== Detail produk ===== -->
-    <div id="detailModal" class="modal-bg" onclick="if (event.target === this) closeModal('detailModal');">
-      <div class="modal-box wide" id="detailModalBody" role="dialog" aria-modal="true"></div>
+    <div
+      id="detailModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('detailModal');"
+    >
+      <div
+        class="modal-box wide"
+        id="detailModalBody"
+        role="dialog"
+        aria-modal="true"
+      ></div>
     </div>
 
     <!-- ===== Keranjang ===== -->
-    <div id="cartModal" class="modal-bg" onclick="if (event.target === this) closeModal('cartModal');">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-label="Keranjang belanja">
+    <div
+      id="cartModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('cartModal');"
+    >
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Keranjang belanja"
+      >
         <div class="modal-head">
           <h2>Keranjang Belanja</h2>
-          <button type="button" class="close-btn" onclick="closeModal('cartModal')" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeModal('cartModal')"
+            aria-label="Tutup"
+          >
+            <span data-ic="x" data-size="18"></span>
+          </button>
         </div>
         <div id="cartBody"></div>
       </div>
     </div>
 
     <!-- ===== Checkout ===== -->
-    <div id="checkoutModal" class="modal-bg" onclick="if (event.target === this) closeCheckoutModal();">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-label="Checkout">
+    <div
+      id="checkoutModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeCheckoutModal();"
+    >
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Checkout"
+      >
         <div id="stepConfirm">
           <div class="modal-head">
             <h2>Checkout</h2>
-            <button type="button" class="close-btn" onclick="closeCheckoutModal()" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+            <button
+              type="button"
+              class="close-btn"
+              onclick="closeCheckoutModal()"
+              aria-label="Tutup"
+            >
+              <span data-ic="x" data-size="18"></span>
+            </button>
           </div>
 
           <div class="summary-box first">
@@ -219,47 +364,109 @@
           </div>
 
           <div id="chkTierBox" hidden>
-            <div class="mini-label">Harga grosir — ketuk untuk memilih jumlah:</div>
+            <div class="mini-label">
+              Harga grosir — ketuk untuk memilih jumlah:
+            </div>
             <div id="chkTierList" class="tier-list"></div>
           </div>
 
           <div class="qty-row">
             <span class="qty-label">Jumlah beli</span>
             <div class="qty-control">
-              <button type="button" id="btnQtyMinus" class="qty-btn" onclick="changeCheckoutQty(-1)" aria-label="Kurangi">−</button>
+              <button
+                type="button"
+                id="btnQtyMinus"
+                class="qty-btn"
+                onclick="changeCheckoutQty(-1)"
+                aria-label="Kurangi"
+              >
+                −
+              </button>
               <span id="chkQtyVal" class="qty-val mono">1</span>
-              <button type="button" id="btnQtyPlus" class="qty-btn" onclick="changeCheckoutQty(1)" aria-label="Tambah">+</button>
+              <button
+                type="button"
+                id="btnQtyPlus"
+                class="qty-btn"
+                onclick="changeCheckoutQty(1)"
+                aria-label="Tambah"
+              >
+                +
+              </button>
             </div>
           </div>
 
           <div class="field">
             <label for="chkVoucherInput">Kode voucher (opsional)</label>
             <div class="inline-form">
-              <input id="chkVoucherInput" class="mono" autocapitalize="characters" autocomplete="off" placeholder="Contoh: HEMAT5K" onkeydown="if (event.key === 'Enter') applyCheckoutVoucher();" />
-              <button type="button" class="btn-outline" onclick="applyCheckoutVoucher()">Pakai</button>
+              <input
+                id="chkVoucherInput"
+                class="mono"
+                autocapitalize="characters"
+                autocomplete="off"
+                placeholder="Contoh: HEMAT5K"
+                onkeydown="if (event.key === 'Enter') applyCheckoutVoucher();"
+              />
+              <button
+                type="button"
+                class="btn-outline"
+                onclick="applyCheckoutVoucher()"
+              >
+                Pakai
+              </button>
             </div>
             <div id="chkVoucherStatus" class="field-status"></div>
           </div>
 
           <div class="field">
             <label for="chkBuyerNote">ID Telegram (opsional)</label>
-            <input id="chkBuyerNote" inputmode="numeric" autocomplete="off" placeholder="Contoh: 813402518" />
-            <div class="field-hint">Dipakai untuk salinan pesanan &amp; verifikasi invoice.</div>
+            <input
+              id="chkBuyerNote"
+              inputmode="numeric"
+              autocomplete="off"
+              placeholder="Contoh: 813402518"
+            />
+            <div class="field-hint">
+              Dipakai untuk salinan pesanan &amp; verifikasi invoice.
+            </div>
           </div>
 
           <div class="summary-box">
-            <div class="summary-row"><span>Harga satuan</span><span id="chkUnitPrice" class="mono">Rp 0</span></div>
-            <div class="summary-row"><span>Subtotal</span><span id="chkSubtotal" class="mono">Rp 0</span></div>
+            <div class="summary-row">
+              <span>Harga satuan</span
+              ><span id="chkUnitPrice" class="mono">Rp 0</span>
+            </div>
+            <div class="summary-row">
+              <span>Subtotal</span
+              ><span id="chkSubtotal" class="mono">Rp 0</span>
+            </div>
             <div id="chkDiscountRow" class="summary-row discount" hidden>
-              <span>Voucher (<code id="chkDiscountCode" class="mono"></code>)</span>
+              <span
+                >Voucher (<code id="chkDiscountCode" class="mono"></code>)</span
+              >
               <span id="chkDiscountVal" class="mono">-Rp 0</span>
             </div>
-            <div class="summary-row total"><span>Total bayar</span><span id="chkTotalAkhir" class="mono">Rp 0</span></div>
+            <div class="summary-row total">
+              <span>Total bayar</span
+              ><span id="chkTotalAkhir" class="mono">Rp 0</span>
+            </div>
           </div>
 
           <div class="stack">
-            <button type="button" id="btnCreateQris" class="btn btn-block" onclick="createQrisOrder()">Bayar via QRIS</button>
-            <button type="button" class="btn-outline btn-block" onclick="openProductInTelegram()">Order lewat Bot Telegram</button>
+            <button
+              type="button"
+              id="btnCreateQris"
+              class="btn btn-block"
+              onclick="createQrisOrder()"
+            >
+              Bayar via QRIS
+            </button>
+            <button
+              type="button"
+              class="btn-outline btn-block"
+              onclick="openProductInTelegram()"
+            >
+              Order lewat Bot Telegram
+            </button>
           </div>
         </div>
 
@@ -268,22 +475,51 @@
             <h2>Scan QRIS</h2>
             <span id="qrisCountdown" class="pill-tag red mono">15:00</span>
           </div>
-          <div class="qris-frame"><img id="qrisImg" src="assets/qris.jpg" alt="QRIS dinamis" /></div>
+          <div class="qris-frame">
+            <img id="qrisImg" src="assets/qris.jpg" alt="QRIS dinamis" />
+          </div>
           <div class="summary-box">
-            <div class="summary-row"><span>Harga pesanan</span><span id="qrisNominalAsli" class="mono">Rp 0</span></div>
-            <div class="summary-row"><span>Kode unik</span><span id="qrisKodeUnik" class="mono">+Rp 0</span></div>
+            <div class="summary-row">
+              <span>Harga pesanan</span
+              ><span id="qrisNominalAsli" class="mono">Rp 0</span>
+            </div>
+            <div class="summary-row">
+              <span>Kode unik</span
+              ><span id="qrisKodeUnik" class="mono">+Rp 0</span>
+            </div>
             <div class="summary-row total">
               <span>Transfer tepat</span>
               <span class="total-copy">
                 <span id="qrisTotalBayar" class="mono green-text">Rp 0</span>
-                <button type="button" class="btn-outline btn-sm" onclick="copyTotalNominal()">Salin</button>
+                <button
+                  type="button"
+                  class="btn-outline btn-sm"
+                  onclick="copyTotalNominal()"
+                >
+                  Salin
+                </button>
               </span>
             </div>
           </div>
-          <p class="note-center">Nominal terisi otomatis saat scan. Pesanan dikirim instan begitu pembayaran masuk.</p>
+          <p class="note-center">
+            Nominal terisi otomatis saat scan. Pesanan dikirim instan begitu
+            pembayaran masuk.
+          </p>
           <div class="stack">
-            <button type="button" class="btn btn-block" onclick="checkPaymentStatus(false)">Cek status pembayaran</button>
-            <button type="button" class="btn-outline btn-block" onclick="closeCheckoutModal()">Tutup</button>
+            <button
+              type="button"
+              class="btn btn-block"
+              onclick="checkPaymentStatus(false)"
+            >
+              Cek status pembayaran
+            </button>
+            <button
+              type="button"
+              class="btn-outline btn-block"
+              onclick="closeCheckoutModal()"
+            >
+              Tutup
+            </button>
           </div>
         </div>
 
@@ -293,147 +529,377 @@
               <span class="pill-tag green">Pembayaran lunas</span>
               <h2 class="mt4">Pesanan siap digunakan</h2>
             </div>
-            <button type="button" class="close-btn" onclick="closeCheckoutModal()" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+            <button
+              type="button"
+              class="close-btn"
+              onclick="closeCheckoutModal()"
+              aria-label="Tutup"
+            >
+              <span data-ic="x" data-size="18"></span>
+            </button>
           </div>
           <div class="summary-box">
-            <div class="summary-row"><span>Invoice</span><code id="succTrxId" class="mono strong">TRX</code></div>
-            <div class="summary-row"><span>Produk</span><span id="succProdName">-</span></div>
-            <div class="summary-row"><span>Total</span><span id="succTotalPaid" class="mono">-</span></div>
+            <div class="summary-row">
+              <span>Invoice</span
+              ><code id="succTrxId" class="mono strong">TRX</code>
+            </div>
+            <div class="summary-row">
+              <span>Produk</span><span id="succProdName">-</span>
+            </div>
+            <div class="summary-row">
+              <span>Total</span><span id="succTotalPaid" class="mono">-</span>
+            </div>
           </div>
           <div class="row-between mb4">
             <span class="mini-label nm">Data akun / voucher</span>
             <div class="row-gap">
-              <button type="button" class="btn-outline btn-sm" onclick="copyDeliveredAccounts('succAccountsList')">Salin</button>
-              <button type="button" class="btn-outline btn-sm" onclick="downloadInvoiceTxt()">Unduh .TXT</button>
+              <button
+                type="button"
+                class="btn-outline btn-sm"
+                onclick="copyDeliveredAccounts('succAccountsList')"
+              >
+                Salin
+              </button>
+              <button
+                type="button"
+                class="btn-outline btn-sm"
+                onclick="downloadInvoiceTxt()"
+              >
+                Unduh .TXT
+              </button>
             </div>
           </div>
           <pre id="succAccountsList" class="account-box mono"></pre>
           <div class="stack mt12">
-            <button type="button" class="btn btn-block" onclick="jumpToInvoiceWarranty()">Beri rating &amp; aktifkan garansi</button>
-            <button type="button" class="btn-outline btn-block" onclick="closeCheckoutModal()">Selesai</button>
+            <button
+              type="button"
+              class="btn btn-block"
+              onclick="jumpToInvoiceWarranty()"
+            >
+              Beri rating &amp; aktifkan garansi
+            </button>
+            <button
+              type="button"
+              class="btn-outline btn-block"
+              onclick="closeCheckoutModal()"
+            >
+              Selesai
+            </button>
           </div>
         </div>
       </div>
     </div>
 
     <!-- ===== Pesanan & garansi ===== -->
-    <div id="invoiceModal" class="modal-bg" onclick="if (event.target === this) closeModal('invoiceModal');">
-      <div class="modal-box wide" role="dialog" aria-modal="true" aria-label="Pesanan saya">
+    <div
+      id="invoiceModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('invoiceModal');"
+    >
+      <div
+        class="modal-box wide"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Pesanan saya"
+      >
         <div class="modal-head">
           <h2>Pesanan Saya &amp; Garansi</h2>
-          <button type="button" class="close-btn" onclick="closeModal('invoiceModal')" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeModal('invoiceModal')"
+            aria-label="Tutup"
+          >
+            <span data-ic="x" data-size="18"></span>
+          </button>
         </div>
         <div class="two-col">
           <div class="field">
             <label for="invoiceSearchInput">Nomor invoice</label>
-            <input id="invoiceSearchInput" class="mono" autocapitalize="characters" autocomplete="off" placeholder="TRX-..." onkeydown="if (event.key === 'Enter') lookupInvoiceById();" />
+            <input
+              id="invoiceSearchInput"
+              class="mono"
+              autocapitalize="characters"
+              autocomplete="off"
+              placeholder="TRX-..."
+              onkeydown="if (event.key === 'Enter') lookupInvoiceById();"
+            />
           </div>
           <div class="field">
             <label for="invoiceVerifierInput">ID / username Telegram</label>
-            <input id="invoiceVerifierInput" autocomplete="off" placeholder="Wajib jika dari perangkat lain" onkeydown="if (event.key === 'Enter') lookupInvoiceById();" />
+            <input
+              id="invoiceVerifierInput"
+              autocomplete="off"
+              placeholder="Wajib jika dari perangkat lain"
+              onkeydown="if (event.key === 'Enter') lookupInvoiceById();"
+            />
           </div>
         </div>
-        <button type="button" class="btn btn-block mb14" onclick="lookupInvoiceById()">Periksa pesanan</button>
+        <button
+          type="button"
+          class="btn btn-block mb14"
+          onclick="lookupInvoiceById()"
+        >
+          Periksa pesanan
+        </button>
         <div id="recentInvoicesWrap" class="mb14"></div>
         <div id="invoiceDetailPanel"></div>
       </div>
     </div>
 
     <!-- ===== Voucher ===== -->
-    <div id="voucherModal" class="modal-bg" onclick="if (event.target === this) closeModal('voucherModal');">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-label="Voucher promo">
+    <div
+      id="voucherModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('voucherModal');"
+    >
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Voucher promo"
+      >
         <div class="modal-head">
           <h2>Voucher Promo Aktif</h2>
-          <button type="button" class="close-btn" onclick="closeModal('voucherModal')" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeModal('voucherModal')"
+            aria-label="Tutup"
+          >
+            <span data-ic="x" data-size="18"></span>
+          </button>
         </div>
         <div id="voucherListBody"></div>
       </div>
     </div>
 
     <!-- ===== Notifikasi restock ===== -->
-    <div id="alertModal" class="modal-bg" onclick="if (event.target === this) closeModal('alertModal');">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-label="Notifikasi restock">
+    <div
+      id="alertModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('alertModal');"
+    >
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Notifikasi restock"
+      >
         <div class="modal-head">
           <h2>Kabari Saat Stok Ada</h2>
-          <button type="button" class="close-btn" onclick="closeModal('alertModal')" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeModal('alertModal')"
+            aria-label="Tutup"
+          >
+            <span data-ic="x" data-size="18"></span>
+          </button>
         </div>
         <p id="alertProdTitle" class="muted-text mb12"></p>
         <input type="hidden" id="alertProdKode" />
         <div class="field">
           <label for="alertContactInput">ID Telegram atau kontak</label>
-          <input id="alertContactInput" autocomplete="off" placeholder="Contoh: 813402518 atau @username" />
+          <input
+            id="alertContactInput"
+            autocomplete="off"
+            placeholder="Contoh: 813402518 atau @username"
+          />
         </div>
-        <button type="button" class="btn btn-block" onclick="submitStockAlert()">Aktifkan notifikasi restock</button>
+        <button
+          type="button"
+          class="btn btn-block"
+          onclick="submitStockAlert()"
+        >
+          Aktifkan notifikasi restock
+        </button>
       </div>
     </div>
 
     <!-- ===== Kelola Foto: PIN ===== -->
-    <div id="pinModal" class="modal-bg" onclick="if (event.target === this) closeModal('pinModal');">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-label="Masuk mode kelola foto">
+    <div
+      id="pinModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('pinModal');"
+    >
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Masuk mode kelola foto"
+      >
         <div class="modal-head">
           <h2>Masuk Mode Kelola Foto</h2>
-          <button type="button" class="close-btn" onclick="closeModal('pinModal')" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeModal('pinModal')"
+            aria-label="Tutup"
+          >
+            <span data-ic="x" data-size="18"></span>
+          </button>
         </div>
-        <p class="muted-text mb12">Khusus pemilik toko. Masukkan PIN untuk mengganti foto produk &amp; banner.</p>
+        <p class="muted-text mb12">
+          Khusus pemilik toko. Masukkan PIN untuk mengganti foto produk &amp;
+          banner.
+        </p>
         <div class="field">
           <label for="pinInput">PIN</label>
-          <input id="pinInput" type="password" inputmode="text" autocomplete="off" placeholder="PIN pemilik" onkeydown="if (event.key === 'Enter') submitAdminPin();" />
+          <input
+            id="pinInput"
+            type="password"
+            inputmode="text"
+            autocomplete="off"
+            placeholder="PIN pemilik"
+            onkeydown="if (event.key === 'Enter') submitAdminPin();"
+          />
           <div id="pinStatus" class="field-status"></div>
         </div>
-        <button type="button" class="btn btn-block" onclick="submitAdminPin()">Masuk</button>
+        <button type="button" class="btn btn-block" onclick="submitAdminPin()">
+          Masuk
+        </button>
       </div>
     </div>
 
     <!-- ===== Kelola Foto: editor ===== -->
-    <div id="imgModal" class="modal-bg" onclick="if (event.target === this) closeModal('imgModal');">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-label="Ganti foto">
+    <div
+      id="imgModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('imgModal');"
+    >
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Ganti foto"
+      >
         <div class="modal-head">
           <h2 id="imgModalTitle">Ganti Foto</h2>
-          <button type="button" class="close-btn" onclick="closeModal('imgModal')" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeModal('imgModal')"
+            aria-label="Tutup"
+          >
+            <span data-ic="x" data-size="18"></span>
+          </button>
         </div>
         <div id="imgPreview" class="img-preview"></div>
         <div id="imgDrop" class="img-drop">
           <input id="imgFileInput" type="file" accept="image/*" hidden />
-          <button type="button" class="btn btn-block" onclick="document.getElementById('imgFileInput').click()">
+          <button
+            type="button"
+            class="btn btn-block"
+            onclick="document.getElementById('imgFileInput').click()"
+          >
             <span data-ic="upload" data-size="18"></span> Upload / ambil foto
           </button>
-          <div class="field-hint center">JPG, PNG, atau WEBP. Otomatis dipotong persegi &amp; dikecilkan.</div>
+          <div class="field-hint center">
+            JPG, PNG, atau WEBP. Otomatis dipotong persegi &amp; dikecilkan.
+          </div>
         </div>
         <div class="field mt12">
           <label for="imgUrlInput">Atau tempel link gambar</label>
           <div class="inline-form">
-            <input id="imgUrlInput" type="url" inputmode="url" autocomplete="off" placeholder="https://..." />
-            <button type="button" class="btn-outline" onclick="useImageUrl()">Pakai</button>
+            <input
+              id="imgUrlInput"
+              type="url"
+              inputmode="url"
+              autocomplete="off"
+              placeholder="https://..."
+            />
+            <button type="button" class="btn-outline" onclick="useImageUrl()">
+              Pakai
+            </button>
           </div>
         </div>
         <div class="two-col tight mt12">
-          <button type="button" class="btn-outline btn-block danger" onclick="pendingRemoveImage()"><span data-ic="trash" data-size="16"></span> Hapus foto</button>
-          <button type="button" class="btn-outline btn-block" onclick="pendingResetImage()">Kembalikan bawaan</button>
+          <button
+            type="button"
+            class="btn-outline btn-block danger"
+            onclick="pendingRemoveImage()"
+          >
+            <span data-ic="trash" data-size="16"></span> Hapus foto
+          </button>
+          <button
+            type="button"
+            class="btn-outline btn-block"
+            onclick="pendingResetImage()"
+          >
+            Kembalikan bawaan
+          </button>
         </div>
-        <button type="button" id="imgSaveBtn" class="btn btn-block mt12" onclick="saveImageEdit()">Simpan</button>
+        <button
+          type="button"
+          id="imgSaveBtn"
+          class="btn btn-block mt12"
+          onclick="saveImageEdit()"
+        >
+          Simpan
+        </button>
       </div>
     </div>
 
     <!-- ===== Kelola Foto: simpan & publikasi ===== -->
-    <div id="exportModal" class="modal-bg" onclick="if (event.target === this) closeModal('exportModal');">
-      <div class="modal-box" role="dialog" aria-modal="true" aria-label="Simpan dan publikasi foto">
+    <div
+      id="exportModal"
+      class="modal-bg"
+      onclick="if (event.target === this) closeModal('exportModal');"
+    >
+      <div
+        class="modal-box"
+        role="dialog"
+        aria-modal="true"
+        aria-label="Simpan dan publikasi foto"
+      >
         <div class="modal-head">
           <h2>Simpan &amp; Publikasi Foto</h2>
-          <button type="button" class="close-btn" onclick="closeModal('exportModal')" aria-label="Tutup"><span data-ic="x" data-size="18"></span></button>
+          <button
+            type="button"
+            class="close-btn"
+            onclick="closeModal('exportModal')"
+            aria-label="Tutup"
+          >
+            <span data-ic="x" data-size="18"></span>
+          </button>
         </div>
         <p class="muted-text mb12">
-          Foto yang Anda ubah tersimpan di <b>browser ini saja</b>. Supaya tampil untuk semua pengunjung:
+          Foto yang Anda ubah tersimpan di <b>browser ini saja</b>. Supaya
+          tampil untuk semua pengunjung:
         </p>
         <ol class="help-steps">
           <li>Ketuk <b>Unduh data foto</b> di bawah.</li>
-          <li>Simpan file itu ke folder <code class="mono">data/product-images.json</code> di repo toko.</li>
+          <li>
+            Simpan file itu ke folder
+            <code class="mono">data/product-images.json</code> di repo toko.
+          </li>
           <li>Commit &amp; push — foto langsung tampil untuk semua orang.</li>
         </ol>
         <div class="stack mt12">
-          <button type="button" class="btn btn-block" onclick="exportImages()"><span data-ic="download" data-size="18"></span> Unduh data foto</button>
-          <input id="importFileInput" type="file" accept="application/json,.json" hidden />
-          <button type="button" class="btn-outline btn-block" onclick="document.getElementById('importFileInput').click()">Impor dari file</button>
-          <button type="button" class="btn-outline btn-block danger" onclick="clearLocalImages()">Hapus semua perubahan di browser ini</button>
+          <button type="button" class="btn btn-block" onclick="exportImages()">
+            <span data-ic="download" data-size="18"></span> Unduh data foto
+          </button>
+          <input
+            id="importFileInput"
+            type="file"
+            accept="application/json,.json"
+            hidden
+          />
+          <button
+            type="button"
+            class="btn-outline btn-block"
+            onclick="document.getElementById('importFileInput').click()"
+          >
+            Impor dari file
+          </button>
+          <button
+            type="button"
+            class="btn-outline btn-block danger"
+            onclick="clearLocalImages()"
+          >
+            Hapus semua perubahan di browser ini
+          </button>
         </div>
         <div id="exportInfo" class="field-hint center mt12"></div>
       </div>
