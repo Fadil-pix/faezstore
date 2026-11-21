@@ -1,5 +1,5 @@
 /* ==========================================================================
-   FAEZ STORE — Kelola Foto (upload / ganti / hapus foto produk & banner)
+   FaezStore — Kelola Foto (upload / ganti / hapus foto produk & banner)
 
    Cara kerja:
    - Pemilik masuk lewat footer "Kelola Foto" + PIN (FAEZ_CONFIG.adminPin).
@@ -18,9 +18,15 @@ const EDIT = { kode: null, mode: "keep", value: "" };
 
 /* ---------- State & penyimpanan ---------- */
 function isAdmin() {
-  try { return localStorage.getItem(ADMIN_KEY) === "1"; } catch (_) { return false; }
+  try {
+    return localStorage.getItem(ADMIN_KEY) === "1";
+  } catch (_) {
+    return false;
+  }
 }
-function hasOwn(o, k) { return Object.prototype.hasOwnProperty.call(o, k); }
+function hasOwn(o, k) {
+  return Object.prototype.hasOwnProperty.call(o, k);
+}
 
 async function loadImageOverrides() {
   if (IMG.loaded) return;
@@ -31,11 +37,15 @@ async function loadImageOverrides() {
       const data = await res.json();
       if (data && typeof data === "object") IMG.published = data;
     }
-  } catch (_) { /* file belum ada: tidak masalah */ }
+  } catch (_) {
+    /* file belum ada: tidak masalah */
+  }
   try {
     const raw = JSON.parse(localStorage.getItem(IMG_KEY) || "{}");
     if (raw && typeof raw === "object") IMG.local = raw;
-  } catch (_) { IMG.local = {}; }
+  } catch (_) {
+    IMG.local = {};
+  }
 }
 
 function saveLocalImages() {
@@ -43,7 +53,9 @@ function saveLocalImages() {
     localStorage.setItem(IMG_KEY, JSON.stringify(IMG.local));
     return true;
   } catch (_) {
-    toast("Penyimpanan browser penuh. Hapus beberapa foto lama atau kecilkan ukuran.");
+    toast(
+      "Penyimpanan browser penuh. Hapus beberapa foto lama atau kecilkan ukuran.",
+    );
     return false;
   }
 }
@@ -84,7 +96,10 @@ function applyAdminUI() {
 }
 
 function openAdminLogin() {
-  if (isAdmin()) { toast("Mode Kelola Foto sudah aktif. Ketuk ikon kamera pada produk."); return; }
+  if (isAdmin()) {
+    toast("Mode Kelola Foto sudah aktif. Ketuk ikon kamera pada produk.");
+    return;
+  }
   document.getElementById("pinInput").value = "";
   document.getElementById("pinStatus").textContent = "";
   openModal("pinModal");
@@ -95,7 +110,9 @@ function submitAdminPin() {
   const val = document.getElementById("pinInput").value.trim();
   const status = document.getElementById("pinStatus");
   if (val && val === String(FAEZ_CONFIG.adminPin)) {
-    try { localStorage.setItem(ADMIN_KEY, "1"); } catch (_) {}
+    try {
+      localStorage.setItem(ADMIN_KEY, "1");
+    } catch (_) {}
     closeModal("pinModal");
     applyAdminUI();
     renderGrid();
@@ -107,7 +124,9 @@ function submitAdminPin() {
 }
 
 function exitAdminMode() {
-  try { localStorage.removeItem(ADMIN_KEY); } catch (_) {}
+  try {
+    localStorage.removeItem(ADMIN_KEY);
+  } catch (_) {}
   applyAdminUI();
   renderGrid();
   toast("Keluar dari Mode Kelola Foto");
@@ -150,7 +169,9 @@ function openImageEditor(kode) {
   EDIT.kode = kode;
   EDIT.mode = "keep";
   EDIT.value = "";
-  document.getElementById("imgModalTitle").textContent = isBanner ? "Ganti Banner Toko" : `Foto: ${p.nama}`;
+  document.getElementById("imgModalTitle").textContent = isBanner
+    ? "Ganti Banner Toko"
+    : `Foto: ${p.nama}`;
   document.getElementById("imgUrlInput").value = "";
   document.getElementById("imgFileInput").value = "";
   renderEditPreview();
@@ -158,46 +179,67 @@ function openImageEditor(kode) {
 }
 
 /* Potong persegi (atau 16:9 untuk banner), kecilkan, kompres → data URL */
-function fileToDataUrl(file, { square = true, maxSide = 800, quality = 0.82 } = {}) {
+function fileToDataUrl(
+  file,
+  { square = true, maxSide = 800, quality = 0.82 } = {},
+) {
   return new Promise((resolve, reject) => {
     const blobUrl = URL.createObjectURL(file);
     const img = new Image();
     img.onload = () => {
       try {
         const ratio = square ? 1 : 16 / 9;
-        let sw = img.naturalWidth, sh = img.naturalHeight;
+        let sw = img.naturalWidth,
+          sh = img.naturalHeight;
         // area potong di tengah dengan rasio target
-        let cw = sw, ch = sw / ratio;
-        if (ch > sh) { ch = sh; cw = sh * ratio; }
-        const sx = (sw - cw) / 2, sy = (sh - ch) / 2;
+        let cw = sw,
+          ch = sw / ratio;
+        if (ch > sh) {
+          ch = sh;
+          cw = sh * ratio;
+        }
+        const sx = (sw - cw) / 2,
+          sy = (sh - ch) / 2;
         const scale = Math.min(1, maxSide / Math.max(cw, ch));
         const tw = Math.max(1, Math.round(cw * scale));
         const th = Math.max(1, Math.round(ch * scale));
         const canvas = document.createElement("canvas");
-        canvas.width = tw; canvas.height = th;
+        canvas.width = tw;
+        canvas.height = th;
         const ctx = canvas.getContext("2d");
         ctx.fillStyle = "#ffffff";
         ctx.fillRect(0, 0, tw, th);
         ctx.drawImage(img, sx, sy, cw, ch, 0, 0, tw, th);
         resolve(canvas.toDataURL("image/jpeg", quality));
-      } catch (e) { reject(e); }
-      finally { URL.revokeObjectURL(blobUrl); }
+      } catch (e) {
+        reject(e);
+      } finally {
+        URL.revokeObjectURL(blobUrl);
+      }
     };
-    img.onerror = () => { URL.revokeObjectURL(blobUrl); reject(new Error("Format gambar tidak didukung")); };
+    img.onerror = () => {
+      URL.revokeObjectURL(blobUrl);
+      reject(new Error("Format gambar tidak didukung"));
+    };
     img.src = blobUrl;
   });
 }
 
 async function handleImageFile(file) {
   if (!file) return;
-  if (!/^image\//.test(file.type)) return toast("Pilih file gambar (JPG, PNG, atau WEBP)");
-  if (file.size > 25 * 1024 * 1024) return toast("File terlalu besar (maks. 25 MB)");
+  if (!/^image\//.test(file.type))
+    return toast("Pilih file gambar (JPG, PNG, atau WEBP)");
+  if (file.size > 25 * 1024 * 1024)
+    return toast("File terlalu besar (maks. 25 MB)");
   const saveBtn = document.getElementById("imgSaveBtn");
   saveBtn.disabled = true;
   saveBtn.textContent = "Memproses foto...";
   try {
     const isBanner = EDIT.kode === BANNER_KEY;
-    EDIT.value = await fileToDataUrl(file, { square: !isBanner, maxSide: isBanner ? 1280 : 800 });
+    EDIT.value = await fileToDataUrl(file, {
+      square: !isBanner,
+      maxSide: isBanner ? 1280 : 800,
+    });
     EDIT.mode = "set";
     renderEditPreview();
   } catch (e) {
@@ -210,13 +252,22 @@ async function handleImageFile(file) {
 
 function useImageUrl() {
   const raw = document.getElementById("imgUrlInput").value.trim();
-  if (!/^https?:\/\//i.test(raw)) return toast("Link harus diawali http:// atau https://");
+  if (!/^https?:\/\//i.test(raw))
+    return toast("Link harus diawali http:// atau https://");
   EDIT.mode = "set";
   EDIT.value = raw;
   renderEditPreview();
 }
-function pendingRemoveImage() { EDIT.mode = "none"; EDIT.value = ""; renderEditPreview(); }
-function pendingResetImage() { EDIT.mode = "reset"; EDIT.value = ""; renderEditPreview(); }
+function pendingRemoveImage() {
+  EDIT.mode = "none";
+  EDIT.value = "";
+  renderEditPreview();
+}
+function pendingResetImage() {
+  EDIT.mode = "reset";
+  EDIT.value = "";
+  renderEditPreview();
+}
 
 function saveImageEdit() {
   const kode = EDIT.kode;
@@ -225,19 +276,29 @@ function saveImageEdit() {
   if (EDIT.mode === "set") IMG.local[kode] = EDIT.value;
   else if (EDIT.mode === "none") IMG.local[kode] = NO_IMG;
   else if (EDIT.mode === "reset") delete IMG.local[kode];
-  else { closeModal("imgModal"); return; }
+  else {
+    closeModal("imgModal");
+    return;
+  }
 
-  if (!saveLocalImages()) { IMG.local = backup; return; }
+  if (!saveLocalImages()) {
+    IMG.local = backup;
+    return;
+  }
   closeModal("imgModal");
   applyBanner();
   renderGrid();
-  toast("Foto tersimpan. Ketuk “Simpan & Publikasi” agar tampil untuk semua pengunjung.");
+  toast(
+    "Foto tersimpan. Ketuk “Simpan & Publikasi” agar tampil untuk semua pengunjung.",
+  );
 }
 
 /* ---------- Simpan & publikasi ---------- */
 function mergedImages() {
   const out = { ...IMG.published };
-  Object.keys(IMG.local).forEach((k) => { out[k] = IMG.local[k]; });
+  Object.keys(IMG.local).forEach((k) => {
+    out[k] = IMG.local[k];
+  });
   return out;
 }
 
@@ -253,13 +314,18 @@ function openExportModal() {
 function exportImages() {
   const data = mergedImages();
   if (!Object.keys(data).length) return toast("Belum ada foto untuk disimpan");
-  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const blob = new Blob([JSON.stringify(data, null, 2)], {
+    type: "application/json",
+  });
   const a = document.createElement("a");
   a.href = URL.createObjectURL(blob);
   a.download = "product-images.json";
   document.body.appendChild(a);
   a.click();
-  setTimeout(() => { URL.revokeObjectURL(a.href); a.remove(); }, 500);
+  setTimeout(() => {
+    URL.revokeObjectURL(a.href);
+    a.remove();
+  }, 500);
   toast("File product-images.json diunduh. Taruh di folder data/ lalu push.");
 }
 
@@ -267,10 +333,14 @@ async function importImagesFile(file) {
   if (!file) return;
   try {
     const data = JSON.parse(await file.text());
-    if (!data || typeof data !== "object" || Array.isArray(data)) throw new Error("bad");
+    if (!data || typeof data !== "object" || Array.isArray(data))
+      throw new Error("bad");
     let count = 0;
     Object.entries(data).forEach(([k, v]) => {
-      if (typeof v === "string" && (v === NO_IMG || /^(data:image\/|https?:\/\/)/i.test(v))) {
+      if (
+        typeof v === "string" &&
+        (v === NO_IMG || /^(data:image\/|https?:\/\/)/i.test(v))
+      ) {
         IMG.local[k] = v;
         count++;
       }
@@ -287,9 +357,16 @@ async function importImagesFile(file) {
 
 function clearLocalImages() {
   if (!Object.keys(IMG.local).length) return toast("Tidak ada perubahan lokal");
-  if (!confirm("Hapus semua perubahan foto di browser ini? Foto yang sudah dipublikasikan tidak terhapus.")) return;
+  if (
+    !confirm(
+      "Hapus semua perubahan foto di browser ini? Foto yang sudah dipublikasikan tidak terhapus.",
+    )
+  )
+    return;
   IMG.local = {};
-  try { localStorage.removeItem(IMG_KEY); } catch (_) {}
+  try {
+    localStorage.removeItem(IMG_KEY);
+  } catch (_) {}
   applyBanner();
   renderGrid();
   openExportModal();
@@ -298,14 +375,33 @@ function clearLocalImages() {
 
 /* ---------- Pasang event ---------- */
 document.addEventListener("DOMContentLoaded", () => {
-  document.getElementById("imgFileInput")?.addEventListener("change", (e) => handleImageFile(e.target.files[0]));
-  document.getElementById("importFileInput")?.addEventListener("change", (e) => { importImagesFile(e.target.files[0]); e.target.value = ""; });
+  document
+    .getElementById("imgFileInput")
+    ?.addEventListener("change", (e) => handleImageFile(e.target.files[0]));
+  document
+    .getElementById("importFileInput")
+    ?.addEventListener("change", (e) => {
+      importImagesFile(e.target.files[0]);
+      e.target.value = "";
+    });
 
   const prev = document.getElementById("imgPreview");
   if (prev) {
-    ["dragenter", "dragover"].forEach((ev) => prev.addEventListener(ev, (e) => { e.preventDefault(); prev.classList.add("drag"); }));
-    ["dragleave", "drop"].forEach((ev) => prev.addEventListener(ev, (e) => { e.preventDefault(); prev.classList.remove("drag"); }));
-    prev.addEventListener("drop", (e) => handleImageFile(e.dataTransfer?.files?.[0]));
+    ["dragenter", "dragover"].forEach((ev) =>
+      prev.addEventListener(ev, (e) => {
+        e.preventDefault();
+        prev.classList.add("drag");
+      }),
+    );
+    ["dragleave", "drop"].forEach((ev) =>
+      prev.addEventListener(ev, (e) => {
+        e.preventDefault();
+        prev.classList.remove("drag");
+      }),
+    );
+    prev.addEventListener("drop", (e) =>
+      handleImageFile(e.dataTransfer?.files?.[0]),
+    );
   }
   applyAdminUI();
 });
