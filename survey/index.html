@@ -6,7 +6,7 @@
       name="viewport"
       content="width=device-width, initial-scale=1, viewport-fit=cover"
     />
-    <title>FaezStore Survey</title>
+    <title>FaezStore â€” Survey Pelanggan</title>
     <meta name="theme-color" content="#111111" />
     <link rel="icon" href="../favicon.ico" sizes="any" />
     <link
@@ -15,18 +15,25 @@
       sizes="32x32"
       href="../assets/favicon-32.png"
     />
+    <link
+      rel="icon"
+      type="image/png"
+      sizes="64x64"
+      href="../assets/favicon-64.png"
+    />
     <link rel="apple-touch-icon" href="../assets/apple-touch-icon.png" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;600&display=swap"
       rel="stylesheet"
     />
     <link rel="stylesheet" href="style.css" />
     <script src="https://unpkg.com/lucide@latest"></script>
     <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="FaezStore" />
     <meta property="og:url" content="https://faezstore.cloud/survey" />
-    <meta property="og:title" content="FaezStore Survey" />
+    <meta property="og:title" content="FaezStore â€” Survey Pelanggan" />
     <meta
       property="og:description"
       content="Isi survei singkat FaezStore dan dapatkan voucher diskon 15%."
@@ -38,129 +45,169 @@
     <meta name="twitter:image" content="https://faezstore.cloud/banner.png" />
   </head>
   <body>
-    <div class="page-shell">
-      <!-- Top Navbar -->
-      <header class="navbar">
-        <a href="https://faezstore.cloud" class="brand">
+    <div class="app" id="top">
+      <!-- ===== Bar atas ===== -->
+      <header class="topbar">
+        <a
+          href="https://faezstore.cloud"
+          class="brand"
+          aria-label="FaezStore beranda"
+        >
           <img
             class="brand-logo"
             src="../assets/logo-128.png"
             alt=""
-            width="30"
-            height="30"
+            width="34"
+            height="34"
           />
           <span>FaezStore</span>
         </a>
-        <nav class="nav-links">
-          <a href="https://faezstore.cloud">Storefront</a>
+
+        <nav class="top-nav" aria-label="Menu utama">
+          <a href="https://faezstore.cloud">Toko</a>
           <a href="#" class="active">Survey</a>
         </nav>
-        <div class="nav-right">
-          <span class="pill-step-top" id="topProgressBadge">Bagian 1 / 1</span>
+
+        <div class="top-actions">
+          <span class="pill-tag mono" id="topProgressBadge">Bagian 1 / 1</span>
         </div>
       </header>
 
-      <!-- Hero Banner (Stuffsus Giant Typography Style) -->
-      <section class="hero-banner">
-        <h1 class="hero-giant-title">Survey</h1>
-        <div class="hero-floating-bar">
-          <span class="hero-tagline">Give All You Need</span>
-          <div class="hero-progress-wrap">
-            <div class="hero-progress-track">
-              <div class="hero-progress-fill" id="progressFill"></div>
+      <main>
+        <!-- ===== Hero ringkas ===== -->
+        <section class="hero">
+          <div class="hero-inner">
+            <span class="hero-eyebrow">Voucher Diskon 15%</span>
+            <h1>Bantu kami bikin FaezStore lebih baik</h1>
+            <p>
+              Isi survei singkat ini kurang dari 2 menit. Setelah selesai, kode
+              voucher diskon 15% langsung terbuka untuk checkout.
+            </p>
+            <div class="hero-progress-bar">
+              <div class="hero-progress-head">
+                <span>Progres survei</span>
+                <span class="mono" id="progressPercentPill">0%</span>
+              </div>
+              <div class="hero-progress-track">
+                <div class="hero-progress-fill" id="progressFill"></div>
+              </div>
             </div>
-            <span class="hero-pill-black" id="progressPercentPill">0%</span>
           </div>
-        </div>
-      </section>
+        </section>
 
-      <!-- Main Split Content -->
-      <main class="main-layout" id="surveyMain">
-        <aside class="sidebar">
-          <h3 class="sidebar-title">Category</h3>
-          <div class="category-list" id="stepSidebarList"></div>
-        </aside>
+        <!-- ===== Konten utama survei ===== -->
+        <section class="survey-layout" id="surveyMain">
+          <aside class="sidebar">
+            <div class="sidebar-title">Bagian Survei</div>
+            <div class="category-list" id="stepSidebarList"></div>
+          </aside>
 
-        <section class="content-area">
-          <div class="section-header">
-            <span class="badge-tag" id="currentGroupBadge">Bagian 1</span>
-            <h2 id="currentGroupTitle">Memuat pertanyaan...</h2>
-          </div>
-
-          <form id="dynamicSurveyForm" novalidate>
-            <div id="questionsContainer" class="questions-grid"></div>
-
-            <p class="error-banner" id="errorMsg" hidden></p>
-
-            <!-- Pagination & Final Submit (Tombol Kirim HANYA muncul di langkah terakhir) -->
-            <div class="form-footer-actions">
-              <button
-                type="button"
-                id="prevBtn"
-                class="btn-pill-outline"
-                hidden
-              >
-                <i data-lucide="arrow-left"></i> Previous
-              </button>
-              <button type="button" id="nextBtn" class="btn-pill-dark" hidden>
-                Next <i data-lucide="arrow-right"></i>
-              </button>
-              <button
-                type="submit"
-                id="submitBtn"
-                class="btn-pill-dark btn-submit-final"
-                hidden
-              >
-                Kirim Survei & Klaim Voucher <i data-lucide="check"></i>
-              </button>
+          <div class="content-area">
+            <div class="section-header">
+              <span class="pill-tag" id="currentGroupBadge">Bagian 1</span>
+              <h2 id="currentGroupTitle">Memuat pertanyaan...</h2>
             </div>
-          </form>
+
+            <form id="dynamicSurveyForm" novalidate>
+              <div id="questionsContainer" class="questions-grid"></div>
+
+              <p class="error-banner" id="errorMsg" hidden></p>
+
+              <div class="form-footer-actions">
+                <button
+                  type="button"
+                  id="prevBtn"
+                  class="btn-outline"
+                  hidden
+                >
+                  <i data-lucide="arrow-left"></i> Sebelumnya
+                </button>
+                <button type="button" id="nextBtn" class="btn" hidden>
+                  Lanjut <i data-lucide="arrow-right"></i>
+                </button>
+                <button
+                  type="submit"
+                  id="submitBtn"
+                  class="btn btn-submit-final"
+                  hidden
+                >
+                  Kirim Survei & Klaim Voucher <i data-lucide="check"></i>
+                </button>
+              </div>
+            </form>
+          </div>
+        </section>
+
+        <!-- ===== Layar selesai & klaim voucher ===== -->
+        <section class="voucher-result-wrap" id="voucherScreen" hidden>
+          <div class="voucher-result-card">
+            <div class="voucher-icon">
+              <i data-lucide="badge-check"></i>
+            </div>
+            <span class="pill-tag green">Survei selesai</span>
+            <h2>Terima Kasih Atas Partisipasimu!</h2>
+            <p>
+              Jawabanmu telah tersimpan. Salin kode voucher di bawah ini dan
+              gunakan saat checkout di FaezStore.
+            </p>
+            <div class="voucher-ticket">
+              <span class="mini-label">VOUCHER DISKON 15%</span>
+              <div class="voucher-code-box">
+                <code id="voucherCodeText" class="mono">SURVEY15</code>
+                <button
+                  type="button"
+                  id="copyVoucherBtn"
+                  class="btn btn-sm"
+                >
+                  Salin Kode
+                </button>
+              </div>
+            </div>
+            <a href="https://faezstore.cloud" class="btn-outline btn-block"
+              >Kembali ke Katalog Toko</a
+            >
+          </div>
+        </section>
+
+        <!-- ===== Dark CTA Banner ===== -->
+        <section class="track-card">
+          <div>
+            <h2>Siap belanja produk digital instan?</h2>
+            <p>
+              Masukanmu membantu kami menyediakan stok aplikasi premium, top-up,
+              dan layanan digital otomatis 24 jam dengan harga terbaik.
+            </p>
+          </div>
+          <div class="cta-action">
+            <a href="https://faezstore.cloud" class="btn-white">
+              Jelajahi Katalog
+              <i data-lucide="arrow-right"></i>
+            </a>
+          </div>
         </section>
       </main>
 
-      <!-- Layar Selesai & Klaim Voucher -->
-      <section class="voucher-result-card" id="voucherScreen" hidden>
-        <div class="voucher-icon"><i data-lucide="badge-check"></i></div>
-        <h2>Terima Kasih Atas Partisipasimu!</h2>
-        <p>
-          Jawabanmu telah tersimpan. Salin kode voucher di bawah ini dan gunakan
-          saat checkout di FaezStore.
-        </p>
-        <div class="voucher-ticket">
-          <span>VOUCHER DISKON 15%</span>
-          <div class="voucher-code-box">
-            <code id="voucherCodeText">SURVEY15</code>
-            <button type="button" id="copyVoucherBtn" class="btn-pill-dark">
-              Salin Kode
-            </button>
+      <!-- ===== Footer ===== -->
+      <footer class="site-footer">
+        <div class="footer-brand">
+          <img src="../assets/logo-128.png" alt="" width="28" height="28" />
+          <div>
+            <strong>FaezStore</strong>
+            <span>Auto-delivery 24/7</span>
           </div>
         </div>
-        <a href="https://faezstore.cloud" class="btn-pill-outline"
-          >Kembali ke Katalog Toko</a
-        >
-      </section>
-
-      <!-- Dark CTA Banner (Stuffsus Bottom Card) -->
-      <section class="dark-cta-banner">
-        <div class="cta-left">
-          <h2>Ready to Get<br />Premium Stuff?</h2>
-          <a href="https://faezstore.cloud" class="cta-white-pill">
-            <span>Jelajahi Katalog FaezStore</span>
-            <span class="cta-mini-btn">Shop</span>
-          </a>
+        <div class="footer-links">
+          <a href="https://faezstore.cloud">Katalog Toko</a>
+          <a
+            href="https://t.me/faezstoresbot"
+            target="_blank"
+            rel="noopener"
+            >Bot Telegram</a
+          >
         </div>
-        <div class="cta-right">
-          <strong>FaezStore Digital Hub</strong>
-          <p>
-            Masukanmu membantu kami menyediakan stok aplikasi premium, top-up,
-            dan layanan digital instan dengan harga terbaik.
-          </p>
+        <div class="footer-copy">
+          Copyright Â© 2026 FaezStore. All Rights Reserved.
         </div>
-      </section>
-
-      <footer class="site-footer">
-        <span>Copyright © 2026 FaezStore. All Rights Reserved.</span>
-        <span>faezstore.cloud</span>
       </footer>
     </div>
 
