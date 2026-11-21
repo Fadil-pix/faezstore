@@ -122,29 +122,6 @@
         </div>
       </header>
 
-      <!-- ===== Bar Kelola Foto (hanya tampil untuk pemilik) ===== -->
-      <div class="admin-bar" id="adminBar" hidden>
-        <span class="admin-bar-title"
-          ><span data-ic="camera" data-size="16"></span> Kelola Foto</span
-        >
-        <div class="admin-bar-actions">
-          <button
-            type="button"
-            class="btn-outline btn-sm"
-            onclick="openExportModal()"
-          >
-            <span data-ic="download" data-size="15"></span> Publikasi
-          </button>
-          <button
-            type="button"
-            class="btn-outline btn-sm"
-            onclick="exitAdminMode()"
-          >
-            Keluar
-          </button>
-        </div>
-      </div>
-
       <main>
         <!-- ===== Hero ringkas ===== -->
         <section class="hero" id="heroBanner">
@@ -160,14 +137,6 @@
               <li><b>3</b><span>Akun terkirim</span></li>
             </ol>
           </div>
-          <button
-            type="button"
-            class="hero-edit admin-only"
-            data-act="editimg"
-            data-kode="__banner__"
-          >
-            <span data-ic="camera" data-size="16"></span> Ganti banner
-          </button>
         </section>
 
         <!-- ===== Cari & filter ===== -->
@@ -258,10 +227,6 @@
             target="_blank"
             rel="noopener"
             >Bot Telegram</a
-          >
-          <button type="button" class="admin-link" onclick="openAdminLogin()">
-            Kelola Foto
-          </button>
         </div>
         <div class="footer-copy">
           Copyright © 2026 FaezStore. All Rights Reserved.
@@ -717,193 +682,6 @@
       </div>
     </div>
 
-    <!-- ===== Kelola Foto: PIN ===== -->
-    <div
-      id="pinModal"
-      class="modal-bg"
-      onclick="if (event.target === this) closeModal('pinModal');"
-    >
-      <div
-        class="modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Masuk mode kelola foto"
-      >
-        <div class="modal-head">
-          <h2>Masuk Mode Kelola Foto</h2>
-          <button
-            type="button"
-            class="close-btn"
-            onclick="closeModal('pinModal')"
-            aria-label="Tutup"
-          >
-            <span data-ic="x" data-size="18"></span>
-          </button>
-        </div>
-        <p class="muted-text mb12">
-          Khusus pemilik toko. Masukkan PIN untuk mengganti foto produk &amp;
-          banner.
-        </p>
-        <div class="field">
-          <label for="pinInput">PIN</label>
-          <input
-            id="pinInput"
-            type="password"
-            inputmode="text"
-            autocomplete="off"
-            placeholder="PIN pemilik"
-            onkeydown="if (event.key === 'Enter') submitAdminPin();"
-          />
-          <div id="pinStatus" class="field-status"></div>
-        </div>
-        <button type="button" class="btn btn-block" onclick="submitAdminPin()">
-          Masuk
-        </button>
-      </div>
-    </div>
-
-    <!-- ===== Kelola Foto: editor ===== -->
-    <div
-      id="imgModal"
-      class="modal-bg"
-      onclick="if (event.target === this) closeModal('imgModal');"
-    >
-      <div
-        class="modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Ganti foto"
-      >
-        <div class="modal-head">
-          <h2 id="imgModalTitle">Ganti Foto</h2>
-          <button
-            type="button"
-            class="close-btn"
-            onclick="closeModal('imgModal')"
-            aria-label="Tutup"
-          >
-            <span data-ic="x" data-size="18"></span>
-          </button>
-        </div>
-        <div id="imgPreview" class="img-preview"></div>
-        <div id="imgDrop" class="img-drop">
-          <input id="imgFileInput" type="file" accept="image/*" hidden />
-          <button
-            type="button"
-            class="btn btn-block"
-            onclick="document.getElementById('imgFileInput').click()"
-          >
-            <span data-ic="upload" data-size="18"></span> Upload / ambil foto
-          </button>
-          <div class="field-hint center">
-            JPG, PNG, atau WEBP. Otomatis dipotong persegi &amp; dikecilkan.
-          </div>
-        </div>
-        <div class="field mt12">
-          <label for="imgUrlInput">Atau tempel link gambar</label>
-          <div class="inline-form">
-            <input
-              id="imgUrlInput"
-              type="url"
-              inputmode="url"
-              autocomplete="off"
-              placeholder="https://..."
-            />
-            <button type="button" class="btn-outline" onclick="useImageUrl()">
-              Pakai
-            </button>
-          </div>
-        </div>
-        <div class="two-col tight mt12">
-          <button
-            type="button"
-            class="btn-outline btn-block danger"
-            onclick="pendingRemoveImage()"
-          >
-            <span data-ic="trash" data-size="16"></span> Hapus foto
-          </button>
-          <button
-            type="button"
-            class="btn-outline btn-block"
-            onclick="pendingResetImage()"
-          >
-            Kembalikan bawaan
-          </button>
-        </div>
-        <button
-          type="button"
-          id="imgSaveBtn"
-          class="btn btn-block mt12"
-          onclick="saveImageEdit()"
-        >
-          Simpan
-        </button>
-      </div>
-    </div>
-
-    <!-- ===== Kelola Foto: simpan & publikasi ===== -->
-    <div
-      id="exportModal"
-      class="modal-bg"
-      onclick="if (event.target === this) closeModal('exportModal');"
-    >
-      <div
-        class="modal-box"
-        role="dialog"
-        aria-modal="true"
-        aria-label="Simpan dan publikasi foto"
-      >
-        <div class="modal-head">
-          <h2>Simpan &amp; Publikasi Foto</h2>
-          <button
-            type="button"
-            class="close-btn"
-            onclick="closeModal('exportModal')"
-            aria-label="Tutup"
-          >
-            <span data-ic="x" data-size="18"></span>
-          </button>
-        </div>
-        <p class="muted-text mb12">
-          Foto yang Anda ubah tersimpan di <b>browser ini saja</b>. Supaya
-          tampil untuk semua pengunjung:
-        </p>
-        <ol class="help-steps">
-          <li>Ketuk <b>Unduh data foto</b> di bawah.</li>
-          <li>
-            Simpan file itu ke folder
-            <code class="mono">data/product-images.json</code> di repo toko.
-          </li>
-          <li>Commit &amp; push — foto langsung tampil untuk semua orang.</li>
-        </ol>
-        <div class="stack mt12">
-          <button type="button" class="btn btn-block" onclick="exportImages()">
-            <span data-ic="download" data-size="18"></span> Unduh data foto
-          </button>
-          <input
-            id="importFileInput"
-            type="file"
-            accept="application/json,.json"
-            hidden
-          />
-          <button
-            type="button"
-            class="btn-outline btn-block"
-            onclick="document.getElementById('importFileInput').click()"
-          >
-            Impor dari file
-          </button>
-          <button
-            type="button"
-            class="btn-outline btn-block danger"
-            onclick="clearLocalImages()"
-          >
-            Hapus semua perubahan di browser ini
-          </button>
-        </div>
-        <div id="exportInfo" class="field-hint center mt12"></div>
-      </div>
-    </div>
 
     <div id="toast" role="status" aria-live="polite"></div>
 

@@ -86,14 +86,6 @@ const ICONS = {
     '<path d="M2 9a3 3 0 0 1 0 6v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2a3 3 0 0 1 0-6V7a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z"/><path d="M13 5v2"/><path d="M13 17v2"/><path d="M13 11v2"/>',
   home: '<path d="M3 9.5 12 3l9 6.5V20a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1z"/><path d="M9 21v-7h6v7"/>',
   zap: '<path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z"/>',
-  camera:
-    '<path d="M14.5 4h-5L7 7H4a2 2 0 0 0-2 2v9a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2V9a2 2 0 0 0-2-2h-3z"/><circle cx="12" cy="13" r="3"/>',
-  upload:
-    '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m17 8-5-5-5 5"/><path d="M12 3v12"/>',
-  download:
-    '<path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><path d="m7 10 5 5 5-5"/><path d="M12 15V3"/>',
-  trash:
-    '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
   x: '<path d="M18 6 6 18"/><path d="m6 6 12 12"/>',
   image:
     '<rect width="18" height="18" x="3" y="3" rx="2"/><circle cx="9" cy="9" r="2"/><path d="m21 15-3.1-3.1a2 2 0 0 0-2.8 0L6 21"/>',
@@ -186,7 +178,6 @@ function formatCountdownShort(endAt) {
 }
 
 async function loadStoreData() {
-  await loadImageOverrides();
   try {
     const res = await fetch(`${FAEZ_CONFIG.apiBase}/api/store/catalog`, {
       headers: { Accept: "application/json" },
@@ -220,7 +211,6 @@ async function loadStoreData() {
   if (b2) b2.href = botUrl;
 
   loadCart();
-  applyBanner();
   renderGrid();
 }
 
@@ -345,7 +335,6 @@ function getFilteredProducts() {
 
 /* ---------- Kartu produk ---------- */
 function photoHtml(p, imgClass = "thumb-img") {
-  const src = getProductImage(p);
   const mono = `<div class="product-monogram">${ic(getCategoryIcon(p.kategori), 24)}<span class="mono">${esc(String(p.kode || "").slice(0, 8))}</span></div>`;
   return (
     mono +
@@ -380,7 +369,6 @@ function buildProductCardHtml(p) {
         ${photoHtml(p)}
         ${promoBadge}
         <span class="stock-chip ${hasStock ? "" : "empty"}">${hasStock ? `${esc(p.stok)} ready` : "Habis"}</span>
-        <button type="button" class="edit-img-btn" data-act="editimg" data-kode="${k}" aria-label="Ganti foto ${esc(p.nama)}">${ic("camera", 18)}</button>
       </div>
       <div class="card-body">
         <span class="card-cat">${esc(p.kategori || "Digital")}</span>
@@ -475,7 +463,6 @@ function openProductDetail(kode) {
     </div>
     <div class="detail-photo">
       ${photoHtml(p)}
-      <button type="button" class="edit-img-btn" data-act="editimg" data-kode="${k}" aria-label="Ganti foto">${ic("camera", 18)}</button>
     </div>
     <h2 class="detail-title">${esc(p.nama)}</h2>
     <div class="detail-meta">
@@ -1192,11 +1179,6 @@ document.addEventListener("click", (e) => {
       if (inDetail) closeModal("detailModal");
       openAlertModal(kode);
       break;
-    case "editimg":
-      e.stopPropagation();
-      if (inDetail) closeModal("detailModal");
-      openImageEditor(kode);
-      break;
     case "cartqty":
       changeCartQty(kode, Number(el.dataset.delta));
       break;
@@ -1255,9 +1237,6 @@ document.addEventListener("keydown", (e) => {
       "invoiceModal",
       "voucherModal",
       "alertModal",
-      "pinModal",
-      "imgModal",
-      "exportModal",
     ].forEach((id) => {
       if (id === "checkoutModal") closeCheckoutModal();
       else closeModal(id);

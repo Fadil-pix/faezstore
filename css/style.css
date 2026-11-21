@@ -1458,45 +1458,6 @@ body.is-admin .edit-img-btn {
   color: var(--muted);
 }
 
-/* ---------- Kelola foto ---------- */
-.img-preview {
-  position: relative;
-  aspect-ratio: 1 / 1;
-  width: min(100%, 300px);
-  margin: 0 auto 12px;
-  border-radius: 16px;
-  overflow: hidden;
-  background: var(--surface);
-  display: grid;
-  place-items: center;
-  border: 2px dashed var(--border);
-}
-.img-preview.wide-prev {
-  aspect-ratio: 16 / 9;
-  width: 100%;
-}
-.img-preview.drag {
-  border-color: var(--ink);
-  background: var(--surface-hover);
-}
-.img-preview img {
-  position: absolute;
-  inset: 0;
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-.img-preview .ph {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 6px;
-  color: var(--muted);
-  font-size: 12.5px;
-  text-align: center;
-  padding: 12px;
-}
-
 /* ---------- Toast ---------- */
 #toast {
   position: fixed;
