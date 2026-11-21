@@ -335,6 +335,7 @@ function getFilteredProducts() {
 
 /* ---------- Kartu produk ---------- */
 function photoHtml(p, imgClass = "thumb-img") {
+  const src = (p.image_url || "").trim();
   const mono = `<div class="product-monogram">${ic(getCategoryIcon(p.kategori), 24)}<span class="mono">${esc(String(p.kode || "").slice(0, 8))}</span></div>`;
   return (
     mono +
